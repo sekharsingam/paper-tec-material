@@ -1,20 +1,21 @@
 import PropTypes from "prop-types";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import NewOrderForm from "../new-order/NewOrderForm";
 
 EditOrderDialog.propTypes = {
   open: PropTypes.bool,
+  orderData: PropTypes.any,
   handleConfirm: PropTypes.func,
   handleCancel: PropTypes.func,
 };
 
-export default function EditOrderDialog({ open, handleConfirm, handleCancel }) {
+export default function EditOrderDialog({
+  open,
+  orderData,
+  handleConfirm,
+  handleCancel,
+}) {
   return (
     <div>
       <Dialog
@@ -41,7 +42,11 @@ export default function EditOrderDialog({ open, handleConfirm, handleCancel }) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <NewOrderForm buttonLabel="Update" />
+          <NewOrderForm
+            buttonLabel="Update"
+            orderData={orderData}
+            onSubmit={handleConfirm}
+          />
         </DialogContent>
       </Dialog>
     </div>

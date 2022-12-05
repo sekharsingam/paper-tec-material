@@ -13,12 +13,17 @@ export const getOrders = () => async (dispatch) => {
 export const createOrder = (orderPayload) => async (dispatch) => {
     axios.post(`${API_END_POINT}/api/v1/orders/createorder`, orderPayload).then(response => {
         toast.success('Order has been created successfully.')
+    }).catch(err => {
+        toast.error('Error while creating the order')
     });
 };
 
 export const updateOrder = (orderPayload) => async (dispatch) => {
     axios.put(`${API_END_POINT}/api/v1/orders/updateorder`, orderPayload).then(response => {
         toast.success('Order has been updated successfully.')
+        dispatch(getOrders())
+    }).catch(err => {
+        toast.error('Error while updating the order')
     });
 };
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import {
   Stack,
@@ -33,15 +33,39 @@ const PAPER_SUPPLIER_ITEMS = [
 NewOrderForm.propTypes = {
   onSubmit: PropTypes.func,
   buttonLabel: PropTypes.string,
+  orderData: PropTypes.any,
 };
 
-export default function NewOrderForm({ buttonLabel = "Create", onSubmit }) {
+export default function NewOrderForm({
+  buttonLabel = "Create",
+  onSubmit,
+  orderData,
+}) {
   const [orderDate, setOrderDate] = useState(moment());
   const [customerName, setCustomerName] = useState();
   const [rollWeight, setRollWeight] = useState();
   const [rollSize, setRollSize] = useState();
   const [cupSize, setCupSize] = useState();
   const [paperSupplier, setPaperSupplier] = useState();
+
+  useEffect(() => {
+    if (orderData) {
+      const {
+        orderDate,
+        customerName,
+        rollWeight,
+        rollSize,
+        cupSize,
+        paperSupplier,
+      } = orderData;
+      setOrderDate(moment(orderDate).format());
+      setCustomerName(customerName);
+      setRollWeight(rollWeight);
+      setRollSize(rollSize);
+      setCupSize(cupSize);
+      setPaperSupplier(paperSupplier);
+    }
+  }, [orderData]);
 
   const handleOrderDateChange = (newDate) => {
     setOrderDate(newDate);
@@ -59,12 +83,12 @@ export default function NewOrderForm({ buttonLabel = "Create", onSubmit }) {
     setRollSize(e.target.value);
   };
 
-  const handleCupSizeChange = (value) => {
-    setCupSize(value);
+  const handleCupSizeChange = (event) => {
+    setCupSize(event.target.value);
   };
 
-  const handlePaperSupplierChange = (value) => {
-    setPaperSupplier(value);
+  const handlePaperSupplierChange = (event) => {
+    setPaperSupplier(event.target.value);
   };
 
   const handleSubmitClick = () => {
@@ -73,8 +97,8 @@ export default function NewOrderForm({ buttonLabel = "Create", onSubmit }) {
       customerName,
       rollWeight,
       rollSize,
-      cupSize: cupSize.target.value,
-      paperSupplier: paperSupplier.target.value,
+      cupSize,
+      paperSupplier,
     };
     onSubmit(payload);
   };

@@ -91,7 +91,8 @@ export default function UserPage() {
   };
 
   const onEditOrder = (values) => {
-    dispatch(updateOrder({ ...values, orderId: selectedOrderForAction?.id }));
+    dispatch(updateOrder({ ...values, orderId: selectedOrderForAction?.orderId }));
+    handlePopoverClose();
     handleCloseEditDialog()
   };
 
@@ -110,7 +111,7 @@ export default function UserPage() {
           direction="row"
           alignItems="center"
           justifyContent="space-between"
-          mb={5}
+          mb={2}
         >
           <Typography variant="h4" gutterBottom>
             All Orders
@@ -220,6 +221,7 @@ export default function UserPage() {
 
       <EditOrderDialog
         open={openEditDialog}
+        orderData={selectedOrderForAction}
         handleConfirm={onEditOrder}
         handleCancel={handleCloseEditDialog}
       />
