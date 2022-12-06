@@ -1,5 +1,5 @@
 // component
-import { DashboardOutlined } from '@mui/icons-material';
+import { DashboardOutlined, DeliveryDiningOutlined, DeliveryDiningRounded, PeopleAltOutlined } from '@mui/icons-material';
 import AddShoppingCartOutlinedIcon from '@mui/icons-material/AddShoppingCartOutlined';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import SvgColor from '../../../components/svg-color';
@@ -23,6 +23,16 @@ const navConfig = [
     title: 'new order',
     path: '/dashboard/new-order',
     icon: <AddShoppingCartOutlinedIcon />,
+  },
+  {
+    title: 'all customers',
+    path: '/dashboard/all-customers',
+    icon: <PeopleAltOutlined />,
+  },
+  {
+    title: 'deliveries',
+    path: '/dashboard/deliveries',
+    icon: <DeliveryDiningRounded />,
   }
 ];
 

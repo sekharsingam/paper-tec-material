@@ -11,16 +11,27 @@ import {
   AppOrderTimeline,
   AppWidgetSummary,
 } from '../sections/@dashboard/app';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getOrders } from 'src/app/features/orders/ordersAPI';
+import { ShoppingCart } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
 
+  const dispatch = useDispatch()
+  const { orders } = useSelector((state) => state.order);
+
+  useEffect(() => {
+    dispatch(getOrders());
+  }, []);
+
   return (
     <>
       <Helmet>
-        <title> Dashboard | Minimal UI </title>
+        <title> Dashboard | Paper Tech </title>
       </Helmet>
 
       <Container maxWidth="xl">
@@ -30,19 +41,19 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Weekly Sales" total={714000} icon={'ant-design:android-filled'} />
+            <AppWidgetSummary title="Total Orders" total={orders.length} icon={ShoppingCart} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="New Users" total={1352831} color="info" icon={'ant-design:apple-filled'} />
+            <AppWidgetSummary title="Total Customers" total={3} color="info" icon={ShoppingCart} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={'ant-design:windows-filled'} />
+            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={ShoppingCart} />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={'ant-design:bug-filled'} />
+            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={ShoppingCart} />
           </Grid>
 
           <Grid item xs={12} md={6} lg={8}>
@@ -58,7 +69,7 @@ export default function DashboardAppPage() {
             />
           </Grid>
 
-          <Grid item xs={12} md={6} lg={4}>
+          {/* <Grid item xs={12} md={6} lg={4}>
             <AppOrderTimeline
               title="Order Timeline"
               list={[...Array(5)].map((_, index) => ({
@@ -74,7 +85,7 @@ export default function DashboardAppPage() {
                 time: faker.date.past(),
               }))}
             />
-          </Grid>
+          </Grid> */}
         </Grid>
       </Container>
     </>

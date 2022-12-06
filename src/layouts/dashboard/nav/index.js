@@ -10,6 +10,7 @@ import Scrollbar from '../../../components/scrollbar';
 import NavSection from '../../../components/nav-section';
 //
 import navConfig from './config';
+import Logo from './Logo';
 
 // ----------------------------------------------------------------------
 
@@ -39,6 +40,10 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
+      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
+        <Logo />
+      </Box>
+      
       <NavSection data={navConfig} />
 
       <Box sx={{ flexGrow: 1 }} />

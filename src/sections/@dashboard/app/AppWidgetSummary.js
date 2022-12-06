@@ -6,6 +6,7 @@ import { Card, Typography } from '@mui/material';
 import { fShortenNumber } from '../../../utils/formatNumber';
 // components
 import Iconify from '../../../components/iconify';
+import { ShoppingCartCheckout } from '@mui/icons-material';
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +31,7 @@ AppWidgetSummary.propTypes = {
   sx: PropTypes.object,
 };
 
-export default function AppWidgetSummary({ title, total, icon, color = 'primary', sx, ...other }) {
+export default function AppWidgetSummary({ title, total, icon:Icon, color = 'primary', sx, ...other }) {
   return (
     <Card
       sx={{
@@ -53,7 +54,7 @@ export default function AppWidgetSummary({ title, total, icon, color = 'primary'
             )} 100%)`,
         }}
       >
-        <Iconify icon={icon} width={24} height={24} />
+        <Icon width={24} height={24} />
       </StyledIcon>
 
       <Typography variant="h3">{fShortenNumber(total)}</Typography>

@@ -41,7 +41,7 @@ export default function NewOrderForm({
   onSubmit,
   orderData,
 }) {
-  const [orderDate, setOrderDate] = useState(moment());
+  const [orderDate, setOrderDate] = useState(null);
   const [customerName, setCustomerName] = useState();
   const [rollWeight, setRollWeight] = useState();
   const [rollSize, setRollSize] = useState();

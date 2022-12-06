@@ -2,18 +2,9 @@ import PropTypes from "prop-types";
 // @mui
 import { styled, alpha } from "@mui/material/styles";
 import SyncIcon from "@mui/icons-material/Sync";
-import {
-  Toolbar,
-  Tooltip,
-  IconButton,
-  Typography,
-  OutlinedInput,
-  InputAdornment,
-} from "@mui/material";
+import { Toolbar, OutlinedInput, InputAdornment } from "@mui/material";
+import Iconify from "src/components/iconify";
 // component
-import Iconify from "../../../components/iconify";
-import { useDispatch } from "react-redux";
-import { getOrders } from "src/app/features/orders/ordersAPI";
 
 // ----------------------------------------------------------------------
 
@@ -44,28 +35,29 @@ const StyledSearch = styled(OutlinedInput)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-OrderListToolbar.propTypes = {
+CustomSearchToolbar.propTypes = {
   numSelected: PropTypes.number,
   filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
+  onSearchChange: PropTypes.func,
+  onRefresh: PropTypes.func,
 };
 
-export default function OrderListToolbar({
+export default function CustomSearchToolbar({
   numSelected,
-  filterName,
-  onFilterName,
+  searchValue,
+  onSearchChange,
+  onRefresh,
 }) {
-  const dispatch = useDispatch();
   return (
     <StyledRoot>
       <SyncIcon
         sx={{ cursor: "pointer", height: 32, width: 32 }}
-        onClick={() => dispatch(getOrders())}
+        onClick={onRefresh}
       />
       <StyledSearch
-        value={filterName}
-        onChange={onFilterName}
-        placeholder="Search order..."
+        value={searchValue}
+        onChange={onSearchChange}
+        placeholder="Search..."
         startAdornment={
           <InputAdornment position="start" sx={{ height: "1em" }}>
             <Iconify

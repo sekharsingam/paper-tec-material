@@ -1,4 +1,4 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import {
   Button,
   Dialog,
@@ -8,15 +8,21 @@ import {
   DialogTitle,
 } from "@mui/material";
 
-
-DeleteOrderDialog.propTypes = {
+DeleteDialog.propTypes = {
   open: PropTypes.bool,
+  title: PropTypes.string,
+  contentText: PropTypes.string,
   handleConfirm: PropTypes.func,
-  handleCancel: PropTypes.func
-}
+  handleCancel: PropTypes.func,
+};
 
-export default function DeleteOrderDialog({ open, handleConfirm, handleCancel }) {
-  
+export default function DeleteDialog({
+  open,
+  title,
+  contentText,
+  handleConfirm,
+  handleCancel,
+}) {
   return (
     <div>
       <Dialog
@@ -27,10 +33,10 @@ export default function DeleteOrderDialog({ open, handleConfirm, handleCancel })
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Delete</DialogTitle>
+        <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure want to delete?
+            {contentText}
           </DialogContentText>
         </DialogContent>
         <DialogActions>

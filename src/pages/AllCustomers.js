@@ -5,11 +5,7 @@ import {
   Card,
   Table,
   Stack,
-  Paper,
-  Avatar,
-  Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -18,55 +14,36 @@ import {
   Typography,
   IconButton,
   TableContainer,
-  TablePagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@mui/material";
 // components
 import Iconify from "../components/iconify";
 import Scrollbar from "../components/scrollbar";
 import {
-  EditOrderDialog,
   OrderListHead,
 } from "src/sections/@dashboard/all-orders";
 import {
   deleteOrder,
   getOrders,
-  updateOrder,
 } from "src/app/features/orders/ordersAPI";
 import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "orderDate", label: "Order Date", alignRight: false },
-  { id: "customerName", label: "Customer Name", alignRight: false },
-  { id: "rollWeight", label: "Roll Weight", alignRight: false },
-  { id: "rollSize", label: "Roll Size", alignRight: false },
-  { id: "cupSize", label: "Cup Size", alignRight: false },
-  { id: "paperSupplier", label: "Paper Supplier", alignRight: false },
+  { id: "name", label: "name", alignRight: false },
+  { id: "email", label: "Email", alignRight: false },
+  { id: "phone", label: "Phone", alignRight: false },
+  { id: "address", label: "address", alignRight: false },
   { id: "" },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function AllOrdersPage() {
+export default function AllCustomers() {
   const [openPopover, setPopoverOpen] = useState(null);
-  const [selectedOrderForAction, setSelectedOrderForAction] = useState(null);
+  const [selectedCustomerForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
-  const [openEditDialog, setEditDialogOpen] = useState(false);
-  const dispatch = useDispatch();
-
-  const { orders } = useSelector((state) => state.order);
-
-  useEffect(() => {
-    dispatch(getOrders());
-  }, []);
 
   const handleOpenMenu = (event, order) => {
     setPopoverOpen(event.currentTarget);
@@ -80,7 +57,6 @@ export default function AllOrdersPage() {
   };
 
   const onDeleteOrder = () => {
-    dispatch(deleteOrder(selectedOrderForAction.orderId));
     handlePopoverClose();
     handleCloseDeleteDialog();
   };
@@ -89,30 +65,11 @@ export default function AllOrdersPage() {
     setDeleteDialogOpen(false);
   };
 
-  const onEditOrder = (values) => {
-    dispatch(
-      updateOrder({ ...values, orderId: selectedOrderForAction?.orderId })
-    );
-    handlePopoverClose();
-    handleCloseEditDialog();
-  };
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-  };
-
-  const onRefresh = () => {
-    dispatch(getOrders())
-  }
-
-  const onSearchChange = (e) => {
-    console.log(e.target.value)
-  }
-
+  const customers = []
   return (
     <>
       <Helmet>
-        <title> All Orders | Paper Tech </title>
+        <title> All Customers | Paper Tech </title>
       </Helmet>
 
       <Container>
@@ -123,50 +80,33 @@ export default function AllOrdersPage() {
           mb={2}
         >
           <Typography variant="h4" gutterBottom>
-            All Orders
+            All Customers
           </Typography>
-          {/* <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            New Order
-          </Button> */}
         </Stack>
 
         <Card>
-          <CustomSearchToolbar onRefresh={onRefresh}  onSearchChange={onSearchChange} />
+          <CustomSearchToolbar />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table size="small">
                 <OrderListHead headLabel={TABLE_HEAD} />
                 <TableBody>
-                  {orders.map((row) => {
+                  {customers.map((row) => {
                     const {
                       id,
-                      orderDate,
-                      customerName,
-                      rollWeight,
-                      rollSize,
-                      cupSize,
-                      paperSupplier,
+                      name,
+                      email,
+                      phone,
+                      address,
                     } = row;
-                    const stillUtc = moment.utc(orderDate).toDate();
 
                     return (
                       <TableRow hover key={id}>
-                        <TableCell align="left">
-                          {moment(stillUtc).local().format("YYYY-MM-DD")}
-                        </TableCell>
-                        <TableCell align="left">{customerName}</TableCell>
-                        <TableCell align="left">{rollWeight}</TableCell>
-                        <TableCell align="left">{rollSize}</TableCell>
-                        <TableCell align="left">{cupSize}</TableCell>
-                        <TableCell align="left">{paperSupplier}</TableCell>
-                        {/* <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
+                        <TableCell align="left">{name}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
+                        <TableCell align="left">{phone}</TableCell>
+                        <TableCell align="left">{address}</TableCell>
                         <TableCell align="right">
                           <IconButton
                             size="large"
@@ -180,23 +120,13 @@ export default function AllOrdersPage() {
                     );
                   })}
 
-                  {orders.length === 0 && <TableCell colSpan={TABLE_HEAD.length} align="center">
-                    {"No Orders"}
+                  {customers.length === 0 && <TableCell colSpan={TABLE_HEAD.length} align="center">
+                    {"No Customers"}
                   </TableCell>}
                 </TableBody>
               </Table>
             </TableContainer>
           </Scrollbar>
-
-          {/* <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={orders.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          /> */}
         </Card>
       </Container>
 
@@ -218,11 +148,6 @@ export default function AllOrdersPage() {
           },
         }}
       >
-        <MenuItem onClick={() => setEditDialogOpen(true)}>
-          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
         <MenuItem
           sx={{ color: "error.main" }}
           onClick={() => setDeleteDialogOpen(true)}
@@ -231,13 +156,6 @@ export default function AllOrdersPage() {
           Delete
         </MenuItem>
       </Popover>
-
-      <EditOrderDialog
-        open={openEditDialog}
-        orderData={selectedOrderForAction}
-        handleConfirm={onEditOrder}
-        handleCancel={handleCloseEditDialog}
-      />
 
       <DeleteDialog
         open={openDeleteDialog}
