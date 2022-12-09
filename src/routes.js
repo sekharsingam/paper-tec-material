@@ -8,7 +8,7 @@ import Page404 from './pages/Page404';
 import DashboardAppPage from './pages/DashboardAppPage';
 import AllOrdersPage from './pages/AllOrdersPage';
 import NewOrderPage from './pages/NewOrderPage';
-import AllCustomers from './pages/AllCustomers';
+import AllCustomersPage from './pages/AllCustomersPage';
 import DeliveriesPage from './pages/DeliveriesPage';
 
 // ----------------------------------------------------------------------
@@ -23,7 +23,7 @@ export default function Router() {
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'all-orders', element: <AllOrdersPage /> },
         { path: 'new-order', element: <NewOrderPage /> },
-        { path: 'all-customers', element: <AllCustomers /> },
+        { path: 'all-customers', element: <AllCustomersPage /> },
         { path: 'deliveries', element: <DeliveriesPage /> },
       ],
     },

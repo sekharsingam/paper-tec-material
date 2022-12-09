@@ -40,12 +40,15 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
+import { debounce } from "lodash";
+import { DEBOUNCE_TIME } from "src/utils/constants";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: "orderDate", label: "Order Date", alignRight: false },
-  { id: "customerName", label: "Customer Name", alignRight: false },
+  { id: "orderId", label: "Order Id ", alignRight: false },
+  { id: "customerId", label: "Customer Id ", alignRight: false },
   { id: "rollWeight", label: "Roll Weight", alignRight: false },
   { id: "rollSize", label: "Roll Size", alignRight: false },
   { id: "cupSize", label: "Cup Size", alignRight: false },
@@ -60,13 +63,15 @@ export default function AllOrdersPage() {
   const [selectedOrderForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
   const [openEditDialog, setEditDialogOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
   const dispatch = useDispatch();
 
   const { orders } = useSelector((state) => state.order);
 
   useEffect(() => {
-    dispatch(getOrders());
-  }, []);
+    dispatch(getOrders(searchValue));
+  }, [dispatch, searchValue]);
 
   const handleOpenMenu = (event, order) => {
     setPopoverOpen(event.currentTarget);
@@ -76,7 +81,6 @@ export default function AllOrdersPage() {
   const handlePopoverClose = () => {
     setPopoverOpen(null);
     setSelectedOrderForAction(null);
-    console.log("Popover closed");
   };
 
   const onDeleteOrder = () => {
@@ -102,12 +106,14 @@ export default function AllOrdersPage() {
   };
 
   const onRefresh = () => {
-    dispatch(getOrders())
-  }
+    dispatch(getOrders(searchValue));
+  };
 
   const onSearchChange = (e) => {
-    console.log(e.target.value)
-  }
+    dispatch(debounce(() => {
+      setSearchValue(e.target.value);
+    }, DEBOUNCE_TIME))
+  };
 
   return (
     <>
@@ -134,7 +140,10 @@ export default function AllOrdersPage() {
         </Stack>
 
         <Card>
-          <CustomSearchToolbar onRefresh={onRefresh}  onSearchChange={onSearchChange} />
+          <CustomSearchToolbar
+            onRefresh={onRefresh}
+            onSearchChange={onSearchChange}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -144,8 +153,9 @@ export default function AllOrdersPage() {
                   {orders.map((row) => {
                     const {
                       id,
+                      orderId,
                       orderDate,
-                      customerName,
+                      customerId,
                       rollWeight,
                       rollSize,
                       cupSize,
@@ -158,7 +168,8 @@ export default function AllOrdersPage() {
                         <TableCell align="left">
                           {moment(stillUtc).local().format("YYYY-MM-DD")}
                         </TableCell>
-                        <TableCell align="left">{customerName}</TableCell>
+                        <TableCell align="left">{orderId}</TableCell>
+                        <TableCell align="left">{customerId}</TableCell>
                         <TableCell align="left">{rollWeight}</TableCell>
                         <TableCell align="left">{rollSize}</TableCell>
                         <TableCell align="left">{cupSize}</TableCell>
@@ -180,9 +191,13 @@ export default function AllOrdersPage() {
                     );
                   })}
 
-                  {orders.length === 0 && <TableCell colSpan={TABLE_HEAD.length} align="center">
-                    {"No Orders"}
-                  </TableCell>}
+                  {orders.length === 0 && (
+                    <TableRow hover>
+                      <TableCell colSpan={TABLE_HEAD.length} align="center">
+                        {"No Orders"}
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -241,8 +256,8 @@ export default function AllOrdersPage() {
 
       <DeleteDialog
         open={openDeleteDialog}
-        title={'Delete'}
-        contentText={'Are you sure want to delete?'}
+        title={"Delete"}
+        contentText={"Are you sure want to delete?"}
         handleConfirm={onDeleteOrder}
         handleCancel={handleCloseDeleteDialog}
       />

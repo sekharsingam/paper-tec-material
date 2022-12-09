@@ -1,6 +1,5 @@
 import { Helmet } from "react-helmet-async";
 import { useEffect, useState } from "react";
-// @mui
 import {
   Card,
   Table,
@@ -15,18 +14,14 @@ import {
   IconButton,
   TableContainer,
 } from "@mui/material";
-// components
 import Iconify from "../components/iconify";
 import Scrollbar from "../components/scrollbar";
-import {
-  OrderListHead,
-} from "src/sections/@dashboard/all-orders";
-import {
-  deleteOrder,
-  getOrders,
-} from "src/app/features/orders/ordersAPI";
+import { OrderListHead } from "src/sections/@dashboard/all-orders";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
+import { getCustomers } from "src/app/features/customer/customerAPI";
+import { debounce } from "lodash";
+import { DEBOUNCE_TIME } from "src/utils/constants";
 
 // ----------------------------------------------------------------------
 
@@ -35,15 +30,23 @@ const TABLE_HEAD = [
   { id: "email", label: "Email", alignRight: false },
   { id: "phone", label: "Phone", alignRight: false },
   { id: "address", label: "address", alignRight: false },
-  { id: "" },
+  // { id: "" },
 ];
 
 // ----------------------------------------------------------------------
 
-export default function AllCustomers() {
+export default function AllCustomersPage() {
   const [openPopover, setPopoverOpen] = useState(null);
   const [selectedCustomerForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+
+  const { customers } = useSelector((state) => state.customer);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getCustomers(searchValue));
+  }, [dispatch, searchValue]);
 
   const handleOpenMenu = (event, order) => {
     setPopoverOpen(event.currentTarget);
@@ -53,7 +56,6 @@ export default function AllCustomers() {
   const handlePopoverClose = () => {
     setPopoverOpen(null);
     setSelectedOrderForAction(null);
-    console.log("Popover closed");
   };
 
   const onDeleteOrder = () => {
@@ -65,7 +67,16 @@ export default function AllCustomers() {
     setDeleteDialogOpen(false);
   };
 
-  const customers = []
+  const onRefresh = () => {
+    dispatch(getCustomers(searchValue));
+  };
+
+  const onSearchChange = (e) => {
+    dispatch(debounce(() => {
+      setSearchValue(e.target.value);
+    }, DEBOUNCE_TIME))
+  };
+
   return (
     <>
       <Helmet>
@@ -85,7 +96,10 @@ export default function AllCustomers() {
         </Stack>
 
         <Card>
-          <CustomSearchToolbar />
+          <CustomSearchToolbar
+            onRefresh={onRefresh}
+            onSearchChange={onSearchChange}
+          />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -93,13 +107,7 @@ export default function AllCustomers() {
                 <OrderListHead headLabel={TABLE_HEAD} />
                 <TableBody>
                   {customers.map((row) => {
-                    const {
-                      id,
-                      name,
-                      email,
-                      phone,
-                      address,
-                    } = row;
+                    const { id, name, email, phone, address } = row;
 
                     return (
                       <TableRow hover key={id}>
@@ -107,7 +115,7 @@ export default function AllCustomers() {
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
                         <TableCell align="left">{address}</TableCell>
-                        <TableCell align="right">
+                        {/* <TableCell align="right">
                           <IconButton
                             size="large"
                             color="inherit"
@@ -115,14 +123,18 @@ export default function AllCustomers() {
                           >
                             <Iconify icon={"eva:more-vertical-fill"} />
                           </IconButton>
-                        </TableCell>
+                        </TableCell> */}
                       </TableRow>
                     );
                   })}
 
-                  {customers.length === 0 && <TableCell colSpan={TABLE_HEAD.length} align="center">
-                    {"No Customers"}
-                  </TableCell>}
+                  {customers.length === 0 && (
+                    <TableRow hover>
+                      <TableCell colSpan={TABLE_HEAD.length} align="center">
+                        {"No Customers"}
+                      </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>
@@ -159,8 +171,8 @@ export default function AllCustomers() {
 
       <DeleteDialog
         open={openDeleteDialog}
-        title={'Delete'}
-        contentText={'Are you sure want to delete?'}
+        title={"Delete"}
+        contentText={"Are you sure want to delete?"}
         handleConfirm={onDeleteOrder}
         handleCancel={handleCloseDeleteDialog}
       />

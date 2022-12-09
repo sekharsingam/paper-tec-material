@@ -12,23 +12,9 @@ import { LoadingButton } from "@mui/lab";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-
-const CUP_SIZE_ITEMS = [
-  { label: 45, value: 45 },
-  { label: 55, value: 55 },
-  { label: 65, value: 65 },
-  { label: 75, value: 75 },
-  { label: 85, value: 85 },
-  { label: 90, value: 90 },
-  { label: 200, value: 100 },
-];
-
-const PAPER_SUPPLIER_ITEMS = [
-  { label: "ITC", value: "ITC" },
-  { label: "TNPL", value: "TNPL" },
-  { label: "WESTCOAST", value: "WESTCOAST" },
-  { label: "APPM", value: "APPM" },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getCustomers } from "src/app/features/customer/customerAPI";
+import { getMasterData } from "src/app/features/masterData/masterDataAPI";
 
 NewOrderForm.propTypes = {
   onSubmit: PropTypes.func,
@@ -42,24 +28,30 @@ export default function NewOrderForm({
   orderData,
 }) {
   const [orderDate, setOrderDate] = useState(null);
-  const [customerName, setCustomerName] = useState();
+  const [customerId, setCustomerName] = useState();
   const [rollWeight, setRollWeight] = useState();
   const [rollSize, setRollSize] = useState();
   const [cupSize, setCupSize] = useState();
   const [paperSupplier, setPaperSupplier] = useState();
 
+  const { customers } = useSelector((state) => state.customer);
+  const { cupSize: CUP_SIZE_ITEMS, paperSupplier: PAPER_SUPPLIER_ITEMS } =
+    useSelector((state) => state.masterData);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
     if (orderData) {
       const {
         orderDate,
-        customerName,
+        customerId,
         rollWeight,
         rollSize,
         cupSize,
         paperSupplier,
       } = orderData;
       setOrderDate(moment(orderDate).format());
-      setCustomerName(customerName);
+      setCustomerName(customerId);
       setRollWeight(rollWeight);
       setRollSize(rollSize);
       setCupSize(cupSize);
@@ -67,11 +59,16 @@ export default function NewOrderForm({
     }
   }, [orderData]);
 
+  useEffect(() => {
+    dispatch(getCustomers());
+    dispatch(getMasterData());
+  }, []);
+
   const handleOrderDateChange = (newDate) => {
     setOrderDate(newDate);
   };
 
-  const handleCustomerNameChange = (e) => {
+  const handleCustomerIdChange = (e) => {
     setCustomerName(e.target.value);
   };
 
@@ -94,7 +91,7 @@ export default function NewOrderForm({
   const handleSubmitClick = () => {
     const payload = {
       orderDate: moment.utc(orderDate).format("YYYY-MM-DD"),
-      customerName,
+      customerId,
       rollWeight,
       rollSize,
       cupSize,
@@ -115,12 +112,22 @@ export default function NewOrderForm({
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
-        <TextField
-          name="customerName"
-          label="Customer Name"
-          value={customerName}
-          onChange={handleCustomerNameChange}
-        />
+
+        <FormControl fullWidth>
+          <InputLabel id="customer-id">Customer Id</InputLabel>
+          <Select
+            labelId="customer-id"
+            id="customer-id"
+            value={customerId}
+            label="Customer Id"
+            onChange={handleCustomerIdChange}
+          >
+            {customers.map((ele) => (
+              <MenuItem value={ele.customerId}>{ele.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <TextField
           name="rollWeight"
           type={"number"}
@@ -145,7 +152,7 @@ export default function NewOrderForm({
             onChange={handleCupSizeChange}
           >
             {CUP_SIZE_ITEMS.map((ele) => (
-              <MenuItem value={ele.value}>{ele.label}</MenuItem>
+              <MenuItem value={ele}>{ele}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -160,7 +167,7 @@ export default function NewOrderForm({
             onChange={handlePaperSupplierChange}
           >
             {PAPER_SUPPLIER_ITEMS.map((ele) => (
-              <MenuItem value={ele.value}>{ele.label}</MenuItem>
+              <MenuItem value={ele}>{ele}</MenuItem>
             ))}
           </Select>
         </FormControl>

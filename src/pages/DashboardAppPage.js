@@ -1,32 +1,24 @@
-import { Helmet } from 'react-helmet-async';
-import { faker } from '@faker-js/faker';
-// @mui
-import { useTheme } from '@mui/material/styles';
-import { Grid, Container, Typography } from '@mui/material';
-// components
-import Iconify from '../components/iconify';
-// sections
-import {
-  AppNewsUpdate,
-  AppOrderTimeline,
-  AppWidgetSummary,
-} from '../sections/@dashboard/app';
-import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
-import { getOrders } from 'src/app/features/orders/ordersAPI';
-import { ShoppingCart } from '@mui/icons-material';
+import { Helmet } from "react-helmet-async";
+import { faker } from "@faker-js/faker";
+import { useTheme } from "@mui/material/styles";
+import { Grid, Container, Typography } from "@mui/material";
+import { AppNewsUpdate, AppWidgetSummary } from "../sections/@dashboard/app";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { ShoppingCart } from "@mui/icons-material";
+import { getSummaryData } from "src/app/features/dashboard/dashboardAPI";
 
 // ----------------------------------------------------------------------
 
 export default function DashboardAppPage() {
   const theme = useTheme();
 
-  const dispatch = useDispatch()
-  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+  const { orderCount, customerCount } = useSelector((state) => state.dashboard);
 
   useEffect(() => {
-    dispatch(getOrders());
-  }, []);
+    dispatch(getSummaryData());
+  }, [dispatch]);
 
   return (
     <>
@@ -41,20 +33,39 @@ export default function DashboardAppPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total Orders" total={orders.length} icon={ShoppingCart} />
+            <AppWidgetSummary
+              title="Total Orders"
+              total={orderCount}
+              icon={ShoppingCart}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Total Customers" total={3} color="info" icon={ShoppingCart} />
+            <AppWidgetSummary
+              title="Total Customers"
+              total={customerCount}
+              color="info"
+              icon={ShoppingCart}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Item Orders" total={1723315} color="warning" icon={ShoppingCart} />
+            <AppWidgetSummary
+              title="Total Deliveries"
+              total={1}
+              color="warning"
+              icon={ShoppingCart}
+            />
           </Grid>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <AppWidgetSummary title="Bug Reports" total={234} color="error" icon={ShoppingCart} />
-          </Grid>
+          {/* <Grid item xs={12} sm={6} md={3}>
+            <AppWidgetSummary
+              title="Bug Reports"
+              total={1}
+              color="error"
+              icon={ShoppingCart}
+            />
+          </Grid> */}
 
           <Grid item xs={12} md={6} lg={8}>
             <AppNewsUpdate
