@@ -103,7 +103,7 @@ export default function AllCustomersPage() {
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table size="small">
+              <Table size="medium">
                 <OrderListHead headLabel={TABLE_HEAD} />
                 <TableBody>
                   {customers.map((row) => {

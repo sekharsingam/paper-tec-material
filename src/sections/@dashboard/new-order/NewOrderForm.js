@@ -102,7 +102,14 @@ export default function NewOrderForm({
 
   return (
     <>
-      <Stack spacing={3} style={{ marginTop: 10 }}>
+      <Stack
+        direction="row"
+        display={"grid"}
+        gridTemplateColumns={"repeat(2, 1fr)"}
+        gap={3}
+        sx={{ my: 3 }}
+      >
+        {/* <Stack spacing={3} style={{ marginTop: 10 }}> */}
         <LocalizationProvider dateAdapter={AdapterMoment}>
           <DesktopDatePicker
             label="Order Date"
@@ -131,24 +138,24 @@ export default function NewOrderForm({
         <TextField
           name="rollWeight"
           type={"number"}
-          label="Roll Weight"
+          label="Roll Weight (Tons)"
           value={rollWeight}
           onChange={handleRollWeightChange}
         />
         <TextField
           name="rollSize"
-          label="Roll Size"
+          label="Roll Size (ml)"
           type={"number"}
           value={rollSize}
           onChange={handleRollSizeChange}
         />
         <FormControl fullWidth>
-          <InputLabel id="cup-size">Cup Size</InputLabel>
+          <InputLabel id="cup-size">Cup Size (ml)</InputLabel>
           <Select
             labelId="cup-size"
             id="cup-size"
             value={cupSize}
-            label="Cup Size"
+            label="Cup Size (ml)"
             onChange={handleCupSizeChange}
           >
             {CUP_SIZE_ITEMS.map((ele) => (
@@ -174,11 +181,12 @@ export default function NewOrderForm({
       </Stack>
 
       <LoadingButton
-        fullWidth
+        // fullWidth
+        // maxWidth="md"
         size="large"
         type="submit"
         variant="contained"
-        sx={{ mt: 2 }}
+        // sx={{ mt: 2 }}
         onClick={handleSubmitClick}
       >
         {buttonLabel}

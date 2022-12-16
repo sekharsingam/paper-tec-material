@@ -2,7 +2,7 @@
 
 const account = {
   displayName: 'Sekhar Singam',
-  email: 'Sekhar_singam@suchiit.com',
+  email: 'Sekhar_Singam@suchiit.com',
   photoURL: '/assets/images/avatars/avatar_default.jpg',
 };
 

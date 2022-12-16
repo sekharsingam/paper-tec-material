@@ -5,17 +5,11 @@ import {
   Link,
   Container,
   Typography,
-  Divider,
-  Stack,
-  Button,
 } from "@mui/material";
-// hooks
+
 import useResponsive from "../hooks/useResponsive";
-// components
-import Logo from "../components/logo";
-import Iconify from "../components/iconify";
-// sections
-import { LoginForm } from "../sections/auth/login";
+
+import { RegistrationForm } from "src/sections/auth/register";
 import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
@@ -37,7 +31,7 @@ const StyledSection = styled("div")(({ theme }) => ({
 }));
 
 const StyledContent = styled("div")(({ theme }) => ({
-  maxWidth: 480,
+  maxWidth: 780,
   margin: "auto",
   minHeight: "100vh",
   display: "flex",
@@ -48,68 +42,49 @@ const StyledContent = styled("div")(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function LoginPage() {
+export default function RegistrationPage() {
   const mdUp = useResponsive("up", "md");
 
   const navigate = useNavigate();
 
   const onNavigateToRegisterPage = () => {
-    navigate("/register");
+    navigate("/login");
   };
+
+  const onRegister = (data) => {
+    console.log(data);
+  };
+
   return (
     <>
       <Helmet>
-        <title> Login | Paper Tech </title>
+        <title> Registration | Paper Tech </title>
       </Helmet>
 
       <StyledRoot>
         {mdUp && (
           <StyledSection>
-            {/* <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography> */}
             <img src="/assets/images/suchi_it_full_logo.png" alt="login" />
           </StyledSection>
         )}
 
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign in to Paper Tech
+              Sign up to Paper Tech
             </Typography>
-
-            <Typography variant="body2" sx={{ mb: 5 }}>
-              Don’t have an account? {""}
+            <Typography variant="body2">
+              Already have an account? {""}
               <Link
                 variant="subtitle2"
                 sx={{ cursor: "pointer" }}
                 onClick={onNavigateToRegisterPage}
               >
-                Get started
+                Login
               </Link>
             </Typography>
 
-            {/* <Stack direction="row" spacing={2}>
-              <Button fullWidth size="large" color="inherit" variant="outlined">
-                <Iconify icon="eva:google-fill" color="#DF3E30" width={22} height={22} />
-              </Button>
-
-              <Button fullWidth size="large" color="inherit" variant="outlined">
-                <Iconify icon="eva:facebook-fill" color="#1877F2" width={22} height={22} />
-              </Button>
-
-              <Button fullWidth size="large" color="inherit" variant="outlined">
-                <Iconify icon="eva:twitter-fill" color="#1C9CEA" width={22} height={22} />
-              </Button>
-            </Stack>
-
-            <Divider sx={{ my: 3 }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                OR
-              </Typography>
-            </Divider> */}
-
-            <LoginForm />
+            <RegistrationForm onRegister={onRegister} />
           </StyledContent>
         </Container>
       </StyledRoot>

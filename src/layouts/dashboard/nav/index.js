@@ -40,8 +40,9 @@ export default function Nav({ openNav, onCloseNav }) {
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },
       }}
     >
-      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-        <Logo />
+      <Box sx={{ px: 2.5, py: 3, display: 'inline-flex', justifyContent: 'center' }}>
+        {/* <Logo /> */}
+        <img src="/assets/images/suchi_it_full_logo.png" alt="login" height={40}  />
       </Box>
       
       <NavSection data={navConfig} />

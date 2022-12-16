@@ -10,6 +10,7 @@ import AllOrdersPage from './pages/AllOrdersPage';
 import NewOrderPage from './pages/NewOrderPage';
 import AllCustomersPage from './pages/AllCustomersPage';
 import DeliveriesPage from './pages/DeliveriesPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 // ----------------------------------------------------------------------
 
@@ -30,6 +31,10 @@ export default function Router() {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    {
+      path: 'register',
+      element: <RegistrationPage />,
     },
     {
       element: <SimpleLayout />,

@@ -42,6 +42,7 @@ import moment from "moment";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
 import { debounce } from "lodash";
 import { DEBOUNCE_TIME } from "src/utils/constants";
+import Label from "src/components/label";
 
 // ----------------------------------------------------------------------
 
@@ -53,6 +54,7 @@ const TABLE_HEAD = [
   { id: "rollSize", label: "Roll Size", alignRight: false },
   { id: "cupSize", label: "Cup Size", alignRight: false },
   { id: "paperSupplier", label: "Paper Supplier", alignRight: false },
+  { id: "status", label: "Status", alignRight: false },
   { id: "" },
 ];
 
@@ -174,9 +176,9 @@ export default function AllOrdersPage() {
                         <TableCell align="left">{rollSize}</TableCell>
                         <TableCell align="left">{cupSize}</TableCell>
                         <TableCell align="left">{paperSupplier}</TableCell>
-                        {/* <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
+                        <TableCell align="left">
+                          <Label color={'info'}>{'Pending'}</Label>
+                        </TableCell>
 
                         <TableCell align="right">
                           <IconButton

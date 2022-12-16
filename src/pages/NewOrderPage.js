@@ -18,7 +18,7 @@ const StyledRoot = styled("div")(({ theme }) => ({
 }));
 
 const StyledContent = styled("div")(({ theme }) => ({
-  maxWidth: 480,
+  // maxWidth: 680,
   margin: "auto",
   //   minHeight: '100vh',
   display: "flex",
@@ -48,7 +48,7 @@ export default function NewOrderPage() {
         New Order
       </Typography>
       <StyledRoot>
-        <Container maxWidth="sm">
+        <Container maxWidth="md">
           <StyledContent>
             <NewOrderForm onSubmit={handleSubmitForm} />
           </StyledContent>
