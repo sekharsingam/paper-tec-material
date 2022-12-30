@@ -91,7 +91,7 @@ export default function NewOrderForm({
   const handleSubmitClick = () => {
     const payload = {
       orderDate: moment.utc(orderDate).format("YYYY-MM-DD"),
-      customerId,
+      customerId: 'C-2',
       rollWeight,
       rollSize,
       cupSize,
@@ -120,7 +120,7 @@ export default function NewOrderForm({
           />
         </LocalizationProvider>
 
-        <FormControl fullWidth>
+        {/* <FormControl fullWidth>
           <InputLabel id="customer-id">Customer Id</InputLabel>
           <Select
             labelId="customer-id"
@@ -133,7 +133,7 @@ export default function NewOrderForm({
               <MenuItem value={ele.customerId}>{ele.name}</MenuItem>
             ))}
           </Select>
-        </FormControl>
+        </FormControl> */}
 
         <TextField
           name="rollWeight"

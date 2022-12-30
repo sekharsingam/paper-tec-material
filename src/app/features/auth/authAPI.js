@@ -16,7 +16,7 @@ export const login = (searchInput) => async (dispatch) => {
 
 export const registration = (payload) => async (dispatch) => {
   axios
-    .post(`${API_END_POINT}/api/v1/customers/getcustomers`, payload)
+    .post(`${API_END_POINT}/api/v1/customers/createcustomer`, payload)
     .then((response) => {
       toast.success("Register successfully.");
     })

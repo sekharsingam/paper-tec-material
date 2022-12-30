@@ -5,11 +5,7 @@ import {
   Card,
   Table,
   Stack,
-  Paper,
-  Avatar,
-  Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -18,12 +14,6 @@ import {
   Typography,
   IconButton,
   TableContainer,
-  TablePagination,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@mui/material";
 // components
 import Iconify from "../components/iconify";
@@ -43,6 +33,8 @@ import { CustomSearchToolbar, DeleteDialog } from "src/shared";
 import { debounce } from "lodash";
 import { DEBOUNCE_TIME } from "src/utils/constants";
 import Label from "src/components/label";
+import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
+import { createDelivery } from "src/app/features/delivery/deliveryAPI";
 
 // ----------------------------------------------------------------------
 
@@ -65,6 +57,8 @@ export default function AllOrdersPage() {
   const [selectedOrderForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
   const [openEditDialog, setEditDialogOpen] = useState(false);
+  const [openCreateDeliveryDialog, setCreateDeliveryDialogOpen] =
+    useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const dispatch = useDispatch();
@@ -95,6 +89,14 @@ export default function AllOrdersPage() {
     setDeleteDialogOpen(false);
   };
 
+  const onCreateDelivery = (values) => {
+    dispatch(
+      createDelivery({ ...values, orderId: selectedOrderForAction?.orderId })
+    );
+    handlePopoverClose();
+    handleCloseCreateDeliveryDialog();
+  };
+
   const onEditOrder = (values) => {
     dispatch(
       updateOrder({ ...values, orderId: selectedOrderForAction?.orderId })
@@ -107,14 +109,20 @@ export default function AllOrdersPage() {
     setEditDialogOpen(false);
   };
 
+  const handleCloseCreateDeliveryDialog = () => {
+    setCreateDeliveryDialogOpen(false);
+  };
+
   const onRefresh = () => {
     dispatch(getOrders(searchValue));
   };
 
   const onSearchChange = (e) => {
-    dispatch(debounce(() => {
-      setSearchValue(e.target.value);
-    }, DEBOUNCE_TIME))
+    dispatch(
+      debounce(() => {
+        setSearchValue(e.target.value);
+      }, DEBOUNCE_TIME)
+    );
   };
 
   return (
@@ -162,6 +170,7 @@ export default function AllOrdersPage() {
                       rollSize,
                       cupSize,
                       paperSupplier,
+                      status,
                     } = row;
                     const stillUtc = moment.utc(orderDate).toDate();
 
@@ -177,7 +186,7 @@ export default function AllOrdersPage() {
                         <TableCell align="left">{cupSize}</TableCell>
                         <TableCell align="left">{paperSupplier}</TableCell>
                         <TableCell align="left">
-                          <Label color={'info'}>{'Pending'}</Label>
+                          <Label color={"info"}>{status}</Label>
                         </TableCell>
 
                         <TableCell align="right">
@@ -226,7 +235,7 @@ export default function AllOrdersPage() {
         PaperProps={{
           sx: {
             p: 1,
-            width: 140,
+            width: 200,
             "& .MuiMenuItem-root": {
               px: 1,
               typography: "body2",
@@ -235,6 +244,11 @@ export default function AllOrdersPage() {
           },
         }}
       >
+        <MenuItem onClick={() => setCreateDeliveryDialogOpen(true)}>
+          <Iconify icon={"eva:plus-circle-fill"} sx={{ mr: 2 }} />
+          Create Delivery
+        </MenuItem>
+
         <MenuItem onClick={() => setEditDialogOpen(true)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
           Edit
@@ -248,6 +262,12 @@ export default function AllOrdersPage() {
           Delete
         </MenuItem>
       </Popover>
+
+      <CreateDeliveryDialog
+        open={openCreateDeliveryDialog}
+        handleConfirm={onCreateDelivery}
+        handleCancel={handleCloseCreateDeliveryDialog}
+      />
 
       <EditOrderDialog
         open={openEditDialog}

@@ -45,12 +45,7 @@ export default function RegistrationForm({ onRegister }) {
       email,
       phone,
       password,
-      lane,
-      street,
-      city,
-      state,
-      country,
-      zipCode,
+      address: { lane, street, city, state, country, zipCode },
     };
 
     onRegister(payload);

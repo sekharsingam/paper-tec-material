@@ -11,6 +11,8 @@ import useResponsive from "../hooks/useResponsive";
 
 import { RegistrationForm } from "src/sections/auth/register";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { registration } from "src/app/features/auth/authAPI";
 
 // ----------------------------------------------------------------------
 
@@ -47,12 +49,15 @@ export default function RegistrationPage() {
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
   const onNavigateToRegisterPage = () => {
     navigate("/login");
   };
 
   const onRegister = (data) => {
     console.log(data);
+    dispatch(registration(data))    
   };
 
   return (

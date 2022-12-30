@@ -72,10 +72,16 @@ export default function AllCustomersPage() {
   };
 
   const onSearchChange = (e) => {
-    dispatch(debounce(() => {
-      setSearchValue(e.target.value);
-    }, DEBOUNCE_TIME))
+    dispatch(
+      debounce(() => {
+        setSearchValue(e.target.value);
+      }, DEBOUNCE_TIME)
+    );
   };
+
+  const getAddress = (address) => {
+    return (address ? (`${address.lane}, ${address.street}, ${address.city}, ${address.state}, ${address.country}, ${address.zipCode}`) : '')
+  }
 
   return (
     <>
@@ -107,14 +113,14 @@ export default function AllCustomersPage() {
                 <OrderListHead headLabel={TABLE_HEAD} />
                 <TableBody>
                   {customers.map((row) => {
-                    const { id, name, email, phone, address } = row;
-
+                    const { id, firstName, lastName, email, phone, address } =
+                      row;
                     return (
                       <TableRow hover key={id}>
-                        <TableCell align="left">{name}</TableCell>
+                        <TableCell align="left">{`${firstName} ${lastName}`}</TableCell>
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
-                        <TableCell align="left">{address}</TableCell>
+                        <TableCell align="left">{getAddress(address)}</TableCell>
                         {/* <TableCell align="right">
                           <IconButton
                             size="large"

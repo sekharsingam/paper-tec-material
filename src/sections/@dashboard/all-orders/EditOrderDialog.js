@@ -20,7 +20,7 @@ export default function EditOrderDialog({
     <div>
       <Dialog
         open={open}
-        maxWidth={"sm"}
+        maxWidth={"md"}
         fullWidth={true}
         onClose={handleCancel}
         aria-labelledby="alert-dialog-title"
