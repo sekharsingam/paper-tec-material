@@ -12,16 +12,16 @@ DeleteDialog.propTypes = {
   open: PropTypes.bool,
   title: PropTypes.string,
   contentText: PropTypes.string,
-  handleConfirm: PropTypes.func,
-  handleCancel: PropTypes.func,
+  onConfirm: PropTypes.func,
+  onCancel: PropTypes.func,
 };
 
 export default function DeleteDialog({
   open,
   title,
   contentText,
-  handleConfirm,
-  handleCancel,
+  onConfirm,
+  onCancel,
 }) {
   return (
     <div>
@@ -29,7 +29,7 @@ export default function DeleteDialog({
         open={open}
         maxWidth={"xs"}
         fullWidth={true}
-        onClose={handleCancel}
+        onClose={onCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -40,10 +40,10 @@ export default function DeleteDialog({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={handleCancel}>
+          <Button variant="outlined" onClick={onCancel}>
             Cancel
           </Button>
-          <Button variant="contained" onClick={handleConfirm}>
+          <Button variant="contained" onClick={onConfirm}>
             Delete
           </Button>
         </DialogActions>

@@ -13,22 +13,23 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import moment from "moment";
 
 CreateDeliveryDialog.propTypes = {
   open: PropTypes.bool,
-  handleConfirm: PropTypes.func,
-  handleCancel: PropTypes.func,
+  onConfirm: PropTypes.func,
+  onCancel: PropTypes.func,
 };
 
-export default function CreateDeliveryDialog({
-  open,
-  handleConfirm,
-  handleCancel,
-}) {
+export default function CreateDeliveryDialog({ open, onConfirm, onCancel }) {
   const [deliveryDate, setDeliveryDate] = useState(null);
 
   const handleDeliveryDateChange = (newDate) => {
     setDeliveryDate(newDate);
+  };
+
+  const handleConfirm = () => {
+    onConfirm({ deliveryDate: moment.utc(deliveryDate).format("YYYY-MM-DD") });
   };
 
   return (
@@ -37,7 +38,7 @@ export default function CreateDeliveryDialog({
         open={open}
         maxWidth={"sm"}
         fullWidth={true}
-        onClose={handleCancel}
+        onClose={onCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -45,7 +46,7 @@ export default function CreateDeliveryDialog({
           Create Delivery
           <IconButton
             aria-label="close"
-            onClick={handleCancel}
+            onClick={onCancel}
             sx={{
               position: "absolute",
               right: 8,
@@ -78,7 +79,7 @@ export default function CreateDeliveryDialog({
         </DialogContent>
 
         <DialogActions>
-          <Button variant="outlined" onClick={handleCancel}>
+          <Button variant="outlined" onClick={onCancel}>
             Cancel
           </Button>
           <Button variant="contained" onClick={handleConfirm}>

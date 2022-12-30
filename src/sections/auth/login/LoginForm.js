@@ -8,22 +8,23 @@ import {
   InputAdornment,
   TextField,
   Checkbox,
+  Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 // components
 import Iconify from "../../../components/iconify";
+import { useSelector } from "react-redux";
 
 // ----------------------------------------------------------------------
-
 
 const testEmail = "admin@suchiit.com";
 const testPassword = "admin";
 
-export default function LoginForm() {
+export default function LoginForm({ onLogin }) {
   const [email, setEmail] = useState(testEmail);
   const [password, setPassword] = useState(testPassword);
 
-  const navigate = useNavigate();
+  const { loginCalling, loginError } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,7 +32,7 @@ export default function LoginForm() {
     if (email !== testEmail || password !== testPassword) {
       return;
     }
-    navigate("/dashboard/all-orders", { replace: true });
+    onLogin({ username: email, password });
   };
 
   return (
@@ -67,23 +68,34 @@ export default function LoginForm() {
         />
       </Stack>
 
-      <Stack
+      {/* <Stack
         direction="row"
         alignItems="center"
         justifyContent="space-between"
         sx={{ my: 2 }}
       >
-        {/* <Checkbox name="remember" label="Remember me" />
+        <Checkbox name="remember" label="Remember me" />
         <Link variant="subtitle2" underline="hover">
           Forgot password?
-        </Link> */}
-      </Stack>
+        </Link>
+      </Stack> */}
+
+      {loginError && (
+        <Stack sx={{ mt: 2 }}>
+          <Typography
+            variant="body2"
+            sx={{ mb: 2, color: "red" }}
+          >{loginError || `Incorrect Email or Password`}</Typography>
+        </Stack>
+      )}
 
       <LoadingButton
+        sx={{ my: 2 }}
         fullWidth
         size="large"
         type="submit"
         variant="contained"
+        loading={loginCalling}
         onClick={handleClick}
       >
         Login

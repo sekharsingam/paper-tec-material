@@ -5,7 +5,11 @@ import { Grid, Container, Typography } from "@mui/material";
 import { AppNewsUpdate, AppWidgetSummary } from "../sections/@dashboard/app";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { ShoppingCart } from "@mui/icons-material";
+import {
+  LocalShipping,
+  PeopleAltOutlined,
+  ShoppingCart,
+} from "@mui/icons-material";
 import { getSummaryData } from "src/app/features/dashboard/dashboardAPI";
 
 // ----------------------------------------------------------------------
@@ -14,7 +18,9 @@ export default function DashboardAppPage() {
   const theme = useTheme();
 
   const dispatch = useDispatch();
-  const { orderCount, customerCount } = useSelector((state) => state.dashboard);
+  const { orderCount, customerCount, deliveryCount } = useSelector(
+    (state) => state.dashboard
+  );
 
   useEffect(() => {
     dispatch(getSummaryData());
@@ -45,16 +51,16 @@ export default function DashboardAppPage() {
               title="Total Customers"
               total={customerCount}
               color="info"
-              icon={ShoppingCart}
+              icon={PeopleAltOutlined}
             />
           </Grid>
 
           <Grid item xs={12} sm={6} md={3}>
             <AppWidgetSummary
               title="Total Deliveries"
-              total={1}
+              total={deliveryCount}
               color="warning"
-              icon={ShoppingCart}
+              icon={LocalShipping}
             />
           </Grid>
 

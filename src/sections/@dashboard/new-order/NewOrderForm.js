@@ -38,6 +38,8 @@ export default function NewOrderForm({
   const { cupSize: CUP_SIZE_ITEMS, paperSupplier: PAPER_SUPPLIER_ITEMS } =
     useSelector((state) => state.masterData);
 
+  const loggedUserDetails = JSON.parse(localStorage.user);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -91,7 +93,7 @@ export default function NewOrderForm({
   const handleSubmitClick = () => {
     const payload = {
       orderDate: moment.utc(orderDate).format("YYYY-MM-DD"),
-      customerId: 'C-2',
+      customerId: loggedUserDetails.customerId,
       rollWeight,
       rollSize,
       cupSize,

@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   orderCount: 0,
   customerCount: 0,
+  deliveryCount: 0,
 };
 
 export const dashboardSlice = createSlice({
@@ -13,6 +14,7 @@ export const dashboardSlice = createSlice({
       ...state,
       orderCount: action.payload.orderCount,
       customerCount: action.payload.customerCount,
+      deliveryCount: action.payload.deliveryCount,
     }),
   },
 });

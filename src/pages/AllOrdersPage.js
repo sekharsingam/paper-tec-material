@@ -265,8 +265,8 @@ export default function AllOrdersPage() {
 
       <CreateDeliveryDialog
         open={openCreateDeliveryDialog}
-        handleConfirm={onCreateDelivery}
-        handleCancel={handleCloseCreateDeliveryDialog}
+        onConfirm={onCreateDelivery}
+        onCancel={handleCloseCreateDeliveryDialog}
       />
 
       <EditOrderDialog
@@ -280,8 +280,8 @@ export default function AllOrdersPage() {
         open={openDeleteDialog}
         title={"Delete"}
         contentText={"Are you sure want to delete?"}
-        handleConfirm={onDeleteOrder}
-        handleCancel={handleCloseDeleteDialog}
+        onConfirm={onDeleteOrder}
+        onCancel={handleCloseDeleteDialog}
       />
     </>
   );

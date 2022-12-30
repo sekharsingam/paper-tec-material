@@ -30,7 +30,7 @@ export default function RegistrationForm({ onRegister }) {
   const [passwordMatch, setPasswordMatch] = useState(true);
 
   const handleOnBlur = (e) => {
-    setPasswordMatch(e.target.value !== password);
+    setPasswordMatch(e.target.value === password);
   };
 
   const handleRegister = () => {

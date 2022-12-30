@@ -16,7 +16,9 @@ import Logo from "../components/logo";
 import Iconify from "../components/iconify";
 // sections
 import { LoginForm } from "../sections/auth/login";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "src/app/features/auth/authAPI";
 
 // ----------------------------------------------------------------------
 
@@ -53,9 +55,22 @@ export default function LoginPage() {
 
   const navigate = useNavigate();
 
+  const dispatch = useDispatch();
+
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  const onLogin = (data) => {
+    dispatch(login(data));
+  };
+
+  if (isLoggedIn) {
+    return <Navigate to="/dashboard/all-orders" />;
+  }
+
   const onNavigateToRegisterPage = () => {
     navigate("/register");
   };
+
   return (
     <>
       <Helmet>
@@ -65,9 +80,6 @@ export default function LoginPage() {
       <StyledRoot>
         {mdUp && (
           <StyledSection>
-            {/* <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography> */}
             <img src="/assets/images/suchi_it_full_logo.png" alt="login" />
           </StyledSection>
         )}
@@ -109,7 +121,7 @@ export default function LoginPage() {
               </Typography>
             </Divider> */}
 
-            <LoginForm />
+            <LoginForm onLogin={onLogin} />
           </StyledContent>
         </Container>
       </StyledRoot>

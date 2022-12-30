@@ -10,7 +10,7 @@ export const deliverySlice = createSlice({
   reducers: {
     getDeliveriesDone: (state, action) => ({
       ...state,
-      customers: action.payload,
+      deliveries: action.payload,
     }),
     createDeliveryDone: (state, action) => ({
       ...state,

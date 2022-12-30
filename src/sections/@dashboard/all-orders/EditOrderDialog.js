@@ -6,15 +6,15 @@ import NewOrderForm from "../new-order/NewOrderForm";
 EditOrderDialog.propTypes = {
   open: PropTypes.bool,
   orderData: PropTypes.any,
-  handleConfirm: PropTypes.func,
-  handleCancel: PropTypes.func,
+  onConfirm: PropTypes.func,
+  onCancel: PropTypes.func,
 };
 
 export default function EditOrderDialog({
   open,
   orderData,
-  handleConfirm,
-  handleCancel,
+  onConfirm,
+  onCancel,
 }) {
   return (
     <div>
@@ -22,7 +22,7 @@ export default function EditOrderDialog({
         open={open}
         maxWidth={"md"}
         fullWidth={true}
-        onClose={handleCancel}
+        onClose={onCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -30,7 +30,7 @@ export default function EditOrderDialog({
           Update Order
           <IconButton
             aria-label="close"
-            onClick={handleCancel}
+            onClick={onCancel}
             sx={{
               position: "absolute",
               right: 8,
@@ -45,7 +45,7 @@ export default function EditOrderDialog({
           <NewOrderForm
             buttonLabel="Update"
             orderData={orderData}
-            onSubmit={handleConfirm}
+            onSubmit={onConfirm}
           />
         </DialogContent>
       </Dialog>
