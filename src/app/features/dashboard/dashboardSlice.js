@@ -4,6 +4,7 @@ const initialState = {
   orderCount: 0,
   customerCount: 0,
   deliveryCount: 0,
+  reports:[]
 };
 
 export const dashboardSlice = createSlice({
@@ -16,9 +17,13 @@ export const dashboardSlice = createSlice({
       customerCount: action.payload.customerCount,
       deliveryCount: action.payload.deliveryCount,
     }),
+    getReportsDataDone:(state, action) => ({
+      ...state,
+      reports: action.payload
+    })
   },
 });
 
-export const { getSummaryDone } = dashboardSlice.actions;
+export const { getSummaryDone, getReportsDataDone } = dashboardSlice.actions;
 
 export default dashboardSlice.reducer;

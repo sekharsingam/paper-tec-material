@@ -26,24 +26,29 @@ import {
   deleteOrder,
   getOrders,
   getOrdersByCustomer,
+  getRequestedOrders,
+  orderApproval,
   updateOrder,
 } from "src/app/features/orders/ordersAPI";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
 import { debounce } from "lodash";
-import { DEBOUNCE_TIME, ROLE_ADMIN } from "src/utils/constants";
+import {
+  DEBOUNCE_TIME,
+  getStatusColor,
+  ROLE_ADMIN,
+  STATUS,
+} from "src/utils/constants";
 import Label from "src/components/label";
 import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
 import { createDelivery } from "src/app/features/delivery/deliveryAPI";
-import ChangeOrderStatusDialog from "src/sections/@dashboard/all-orders/ChangeOrderStatusDialog";
-import OrderPaymentInfoDialog from "src/sections/@dashboard/all-orders/OrderPaymentInfoDialog";
 
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: "orderDate", label: "Order Date", alignRight: false },
-  { id: "orderId", label: "Order Id ", alignRight: false },
+  { id: "orderRequestId", label: "Order Request Id", alignRight: false },
   { id: "customerId", label: "Customer Id ", alignRight: false },
   { id: "rollWeight", label: "Roll Weight", alignRight: false },
   { id: "rollSize", label: "Roll Size", alignRight: false },
@@ -55,33 +60,23 @@ const TABLE_HEAD = [
 
 // ----------------------------------------------------------------------
 
-export default function AllOrdersPage() {
+export default function RequestedOrdersPage() {
   const [openPopover, setPopoverOpen] = useState(null);
   const [selectedOrderForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
-  const [openEditDialog, setEditDialogOpen] = useState(false);
-  const [openChangeStatusDialog, setChangeStatusDialogOpen] = useState(false);
-  const [openCreateDeliveryDialog, setCreateDeliveryDialogOpen] =
-    useState(false);
-  const [openOrderPaymentInfoDialog, setOrderPaymentInfoDialogOpen] =
-    useState(false);
+
   const [searchValue, setSearchValue] = useState("");
 
   const dispatch = useDispatch();
 
-  const { orders } = useSelector((state) => state.order);
+  const { requestedOrders = [] } = useSelector((state) => state.order);
 
   useEffect(() => {
-    getCustomerOrders();
-  }, [dispatch, searchValue]);
+    getAllRequestedOrders();
+  }, [searchValue]);
 
-  const getCustomerOrders = () => {
-    const user = JSON.parse(localStorage.user);
-    if (user.role === ROLE_ADMIN) {
-      dispatch(getOrders(searchValue));
-      return;
-    }
-    dispatch(getOrdersByCustomer(user.customerId, searchValue));
+  const getAllRequestedOrders = () => {
+    dispatch(getRequestedOrders(searchValue));
   };
 
   const handleOpenMenu = (event, order) => {
@@ -94,71 +89,33 @@ export default function AllOrdersPage() {
     setSelectedOrderForAction(null);
   };
 
-  const onDeleteOrder = () => {
-    dispatch(deleteOrder(selectedOrderForAction.orderId));
-    handlePopoverClose();
-    handleCloseDeleteDialog();
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setDeleteDialogOpen(false);
-  };
-
-  const onCreateDelivery = (values) => {
-    dispatch(
-      createDelivery({ ...values, orderId: selectedOrderForAction?.orderId })
-    );
-    handlePopoverClose();
-    handleCloseCreateDeliveryDialog();
-  };
-
-  const onEditOrder = (values) => {
-    dispatch(
-      updateOrder({ ...values, orderId: selectedOrderForAction?.orderId })
-    );
-    handlePopoverClose();
-    handleCloseEditDialog();
-  };
-
-  const handleCloseEditDialog = () => {
-    setEditDialogOpen(false);
-  };
-
-  const handleCloseCreateDeliveryDialog = () => {
-    setCreateDeliveryDialogOpen(false);
-  };
-
-  const onChangeOrderStatus = (status) => {
-    console.log(status);
-    handlePopoverClose();
-    handleCloseChangeStatusDialog();
-  };
-
-  const handleCloseChangeStatusDialog = () => {
-    setChangeStatusDialogOpen(false);
-  };
-
-  const handleCloseOrderPaymentInfoDialog = () => {
-    setOrderPaymentInfoDialogOpen(false);
-    handlePopoverClose();
-  };
-
   const onRefresh = () => {
-    getCustomerOrders();
+    getRequestedOrders();
   };
 
-  const onSearchChange = (e) => {
+  const onApprovalOrder = (status) => {
     dispatch(
-      debounce(() => {
-        setSearchValue(e.target.value);
-      }, DEBOUNCE_TIME)
+      orderApproval({
+        orderRequestId: selectedOrderForAction.orderRequestId,
+        userId: JSON.parse(localStorage.user).customerId,
+        status,
+      })
     );
+    handlePopoverClose();
   };
+
+  //   const onSearchChange = (e) => {
+  //     dispatch(
+  //       debounce(() => {
+  //         setSearchValue(e.target.value);
+  //       }, DEBOUNCE_TIME)
+  //     );
+  //   };
 
   return (
     <>
       <Helmet>
-        <title> All Orders | Paper Tech </title>
+        <title> Requested Orders | Paper Tech </title>
       </Helmet>
 
       <Container>
@@ -169,7 +126,7 @@ export default function AllOrdersPage() {
           mb={2}
         >
           <Typography variant="h4" gutterBottom>
-            All Orders
+            Requested Orders
           </Typography>
           {/* <Button
             variant="contained"
@@ -182,19 +139,19 @@ export default function AllOrdersPage() {
         <Card>
           <CustomSearchToolbar
             onRefresh={onRefresh}
-            onSearchChange={onSearchChange}
+            // onSearchChange={onSearchChange}
           />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
-              <Table size="small">
+              <Table size="medium">
                 <OrderListHead headLabel={TABLE_HEAD} />
                 <TableBody>
-                  {orders.map((row) => {
+                  {requestedOrders.map((row) => {
                     const {
                       id,
-                      orderId,
                       orderDate,
+                      orderRequestId,
                       customerId,
                       rollWeight,
                       rollSize,
@@ -209,30 +166,33 @@ export default function AllOrdersPage() {
                         <TableCell align="left">
                           {moment(stillUtc).local().format("YYYY-MM-DD")}
                         </TableCell>
-                        <TableCell align="left">{orderId}</TableCell>
+                        <TableCell align="left">{orderRequestId}</TableCell>
                         <TableCell align="left">{customerId}</TableCell>
                         <TableCell align="left">{rollWeight}</TableCell>
                         <TableCell align="left">{rollSize}</TableCell>
                         <TableCell align="left">{cupSize}</TableCell>
                         <TableCell align="left">{paperSupplier}</TableCell>
+
                         <TableCell align="left">
-                          <Label color={"info"}>{status}</Label>
+                          <Label color={getStatusColor(status)}>{status}</Label>
                         </TableCell>
 
                         <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            onClick={(e) => handleOpenMenu(e, row)}
-                          >
-                            <Iconify icon={"eva:more-vertical-fill"} />
-                          </IconButton>
+                          {status === STATUS.PENDING && (
+                            <IconButton
+                              size="large"
+                              color="inherit"
+                              onClick={(e) => handleOpenMenu(e, row)}
+                            >
+                              <Iconify icon={"eva:more-vertical-fill"} />
+                            </IconButton>
+                          )}
                         </TableCell>
                       </TableRow>
                     );
                   })}
 
-                  {orders.length === 0 && (
+                  {requestedOrders.length === 0 && (
                     <TableRow hover>
                       <TableCell colSpan={TABLE_HEAD.length} align="center">
                         {"No Orders"}
@@ -247,7 +207,7 @@ export default function AllOrdersPage() {
           {/* <TablePagination
             rowsPerPageOptions={[5, 10, 25]}
             component="div"
-            count={orders.length}
+            count={requestedOrders.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -274,77 +234,27 @@ export default function AllOrdersPage() {
           },
         }}
       >
-        <MenuItem onClick={() => setCreateDeliveryDialogOpen(true)}>
-          <Iconify icon={"eva:plus-circle-fill"} sx={{ mr: 2 }} />
-          Create Delivery
-        </MenuItem>
-
-        <MenuItem onClick={() => setEditDialogOpen(true)}>
-          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
-
-        <MenuItem onClick={() => setChangeStatusDialogOpen(true)}>
-          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-          Change Status
-        </MenuItem>
-
-        <MenuItem onClick={() => setOrderPaymentInfoDialogOpen(true)}>
-          <Iconify icon={"fluent:payment-20-filled"} sx={{ mr: 2 }} />
-          Payment Info
-        </MenuItem>
-
-        <MenuItem
-          sx={{ color: "error.main" }}
-          onClick={() => setDeleteDialogOpen(true)}
-        >
-          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
+        {selectedOrderForAction &&
+          selectedOrderForAction.status === STATUS.PENDING && (
+            <>
+              <MenuItem onClick={() => onApprovalOrder(STATUS.ACCEPTED)}>
+                <Iconify
+                  sx={{ color: "success.main", mr: 2 }}
+                  icon={"material-symbols:check-circle"}
+                  // sx={{ mr: 2 }}
+                />
+                Approve
+              </MenuItem>
+              <MenuItem onClick={() => onApprovalOrder(STATUS.REJECTED)}>
+                <Iconify
+                  icon={"mdi:close-circle"}
+                  sx={{ color: "error.main", mr: 2 }}
+                />
+                Reject
+              </MenuItem>
+            </>
+          )}
       </Popover>
-
-      {openCreateDeliveryDialog && (
-        <CreateDeliveryDialog
-          open={openCreateDeliveryDialog}
-          onConfirm={onCreateDelivery}
-          onCancel={handleCloseCreateDeliveryDialog}
-        />
-      )}
-
-      {openEditDialog && (
-        <EditOrderDialog
-          open={openEditDialog}
-          orderData={selectedOrderForAction}
-          onConfirm={onEditOrder}
-          onCancel={handleCloseEditDialog}
-        />
-      )}
-
-      {openDeleteDialog && (
-        <DeleteDialog
-          open={openDeleteDialog}
-          title={"Delete"}
-          contentText={"Are you sure want to delete?"}
-          onConfirm={onDeleteOrder}
-          onCancel={handleCloseDeleteDialog}
-        />
-      )}
-
-      {openChangeStatusDialog && (
-        <ChangeOrderStatusDialog
-          open={openChangeStatusDialog}
-          onConfirm={onChangeOrderStatus}
-          onCancel={handleCloseChangeStatusDialog}
-        />
-      )}
-
-      {openOrderPaymentInfoDialog && (
-        <OrderPaymentInfoDialog
-          order={selectedOrderForAction}
-          open={openOrderPaymentInfoDialog}
-          onCancel={handleCloseOrderPaymentInfoDialog}
-        />
-      )}
     </>
   );
 }

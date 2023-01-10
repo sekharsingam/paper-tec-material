@@ -19,10 +19,11 @@ const HEADER_DESKTOP = 70;
 
 const StyledRoot = styled(AppBar)(({ theme }) => ({
   ...bgBlur({ color: theme.palette.background.default }),
-  boxShadow: 'none',
+  // boxShadow: 'none',
   [theme.breakpoints.up('lg')]: {
     width: `calc(100% - ${NAV_WIDTH + 1}px)`,
   },
+  backgroundColor:'#f4f6f8'
 }));
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({

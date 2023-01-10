@@ -29,9 +29,6 @@ export default function LoginForm({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClick = () => {
-    if (email !== testEmail || password !== testPassword) {
-      return;
-    }
     onLogin({ username: email, password });
   };
 
@@ -82,10 +79,9 @@ export default function LoginForm({ onLogin }) {
 
       {loginError && (
         <Stack sx={{ mt: 2 }}>
-          <Typography
-            variant="body2"
-            sx={{ mb: 2, color: "red" }}
-          >{loginError || `Incorrect Email or Password`}</Typography>
+          <Typography variant="body2" sx={{ mb: 2, color: "red" }}>
+            {loginError || `Incorrect Email or Password`}
+          </Typography>
         </Stack>
       )}
 
@@ -97,6 +93,7 @@ export default function LoginForm({ onLogin }) {
         variant="contained"
         loading={loginCalling}
         onClick={handleClick}
+        disabled={!(email && password)}
       >
         Login
       </LoadingButton>

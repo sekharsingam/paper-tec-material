@@ -23,13 +23,27 @@ CreateDeliveryDialog.propTypes = {
 
 export default function CreateDeliveryDialog({ open, onConfirm, onCancel }) {
   const [deliveryDate, setDeliveryDate] = useState(null);
+  const [price, setPrice] = useState("");
+  const [rollWeightUtilize, setRollWeightUtilize] = useState("");
 
   const handleDeliveryDateChange = (newDate) => {
     setDeliveryDate(newDate);
   };
 
+  const handlePriceChange = (e) => {
+    setPrice(e.target.value);
+  };
+
+  const handleRollWeightUtilize = (e) => {
+    setRollWeightUtilize(e.target.value);
+  };
+
   const handleConfirm = () => {
-    onConfirm({ deliveryDate: moment.utc(deliveryDate).format("YYYY-MM-DD") });
+    onConfirm({
+      deliveryDate: moment.utc(deliveryDate).format(),
+      // price,
+      rollWeight: Number(rollWeightUtilize),
+    });
   };
 
   return (
@@ -58,14 +72,7 @@ export default function CreateDeliveryDialog({ open, onConfirm, onCancel }) {
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <Stack
-            // direction="row"
-            // display={"grid"}
-            // gridTemplateColumns={"repeat(2, 1fr)"}
-            // gap={3}
-            sx={{ my: 3 }}
-          >
-            {/* <Stack spacing={3} style={{ marginTop: 10 }}> */}
+          <Stack gap={2} sx={{ my: 3 }}>
             <LocalizationProvider dateAdapter={AdapterMoment}>
               <DesktopDatePicker
                 label="Delivery Date"
@@ -75,6 +82,22 @@ export default function CreateDeliveryDialog({ open, onConfirm, onCancel }) {
                 renderInput={(params) => <TextField {...params} />}
               />
             </LocalizationProvider>
+            {/* <TextField
+              fullWidth
+              name="price"
+              type={"number"}
+              label="Price"
+              value={price}
+              onChange={handlePriceChange}
+            /> */}
+            <TextField
+              fullWidth
+              name="rollWeightUtilize"
+              type={"number"}
+              label="Roll Weight Utilize (Tons)"
+              value={rollWeightUtilize}
+              onChange={handleRollWeightUtilize}
+            />
           </Stack>
         </DialogContent>
 

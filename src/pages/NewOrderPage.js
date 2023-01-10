@@ -1,13 +1,10 @@
 import { Helmet } from "react-helmet-async";
 // @mui
 import { styled } from "@mui/material/styles";
-import {
-  Container,
-  Typography,
-} from "@mui/material";
+import { Container, Typography } from "@mui/material";
 import NewOrderForm from "src/sections/@dashboard/new-order/NewOrderForm";
 import { useDispatch } from "react-redux";
-import { createOrder } from "src/app/features/orders/ordersAPI";
+import { createOrderRequest } from "src/app/features/orders/ordersAPI";
 
 // ----------------------------------------------------------------------
 
@@ -30,22 +27,20 @@ const StyledContent = styled("div")(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function NewOrderPage() {
-
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleSubmitForm = (values) => {
-    dispatch(createOrder(values))
-  }
+    dispatch(createOrderRequest(values));
+  };
 
-  
   return (
     <>
       <Helmet>
-        <title> New Order | Paper Tech</title>
+        <title> New Order Request | Paper Tech</title>
       </Helmet>
 
       <Typography variant="h4" gutterBottom>
-        New Order
+        New Order Request
       </Typography>
       <StyledRoot>
         <Container maxWidth="md">

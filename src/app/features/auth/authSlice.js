@@ -6,6 +6,7 @@ const initialState = {
   loginError: null,
   registrationCalling: false,
   isLoggedIn: false,
+  loggedInUser: localStorage.user ? JSON.parse(localStorage.user) : null,
 };
 
 export const authSlice = createSlice({
@@ -36,8 +37,7 @@ export const authSlice = createSlice({
     logout: (state, action) => ({
       ...state,
       isLoggedIn: false,
-
-    })
+    }),
   },
   extraReducers: {},
 });
@@ -47,8 +47,7 @@ export const {
   loginDone,
   registrationCalling,
   registrationDone,
-  logout
-
+  logout,
 } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -92,11 +92,11 @@ export default function NewOrderForm({
 
   const handleSubmitClick = () => {
     const payload = {
-      orderDate: moment.utc(orderDate).format("YYYY-MM-DD"),
+      orderDate: moment.utc(orderDate).format(),
       customerId: loggedUserDetails.customerId,
-      rollWeight,
-      rollSize,
-      cupSize,
+      rollWeight: Number(rollWeight),
+      rollSize: Number(rollSize),
+      cupSize: Number(cupSize),
       paperSupplier,
     };
     onSubmit(payload);
@@ -191,7 +191,7 @@ export default function NewOrderForm({
         // sx={{ mt: 2 }}
         onClick={handleSubmitClick}
       >
-        {buttonLabel}
+        {`${buttonLabel} Request`}
       </LoadingButton>
     </>
   );

@@ -45,7 +45,7 @@ export default function Nav({ openNav, onCloseNav }) {
         <img src="/assets/images/suchi_it_full_logo.png" alt="login" height={40}  />
       </Box>
       
-      <NavSection data={navConfig} />
+      <NavSection data={navConfig()} />
 
       <Box sx={{ flexGrow: 1 }} />
 

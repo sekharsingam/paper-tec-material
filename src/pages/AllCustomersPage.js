@@ -19,9 +19,14 @@ import Scrollbar from "../components/scrollbar";
 import { OrderListHead } from "src/sections/@dashboard/all-orders";
 import { useDispatch, useSelector } from "react-redux";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
-import { getCustomers } from "src/app/features/customer/customerAPI";
+import {
+  approveCustomer,
+  deleteCustomer,
+  getCustomers,
+} from "src/app/features/customer/customerAPI";
 import { debounce } from "lodash";
-import { DEBOUNCE_TIME } from "src/utils/constants";
+import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
+import Label from "src/components/label";
 
 // ----------------------------------------------------------------------
 
@@ -30,7 +35,8 @@ const TABLE_HEAD = [
   { id: "email", label: "Email", alignRight: false },
   { id: "phone", label: "Phone", alignRight: false },
   { id: "address", label: "address", alignRight: false },
-  // { id: "" },
+  { id: "status", label: "status", alignRight: false },
+  { id: "" },
 ];
 
 // ----------------------------------------------------------------------
@@ -58,7 +64,19 @@ export default function AllCustomersPage() {
     setSelectedOrderForAction(null);
   };
 
-  const onDeleteOrder = () => {
+  const onApprovalCustomer = (status) => {
+    dispatch(
+      approveCustomer({
+        customerId: selectedCustomerForAction.customerId,
+        status,
+      })
+    );
+    handlePopoverClose();
+    handleCloseDeleteDialog();
+  };
+
+  const onDeleteCustomer = () => {
+    dispatch(deleteCustomer(selectedCustomerForAction.customerId));
     handlePopoverClose();
     handleCloseDeleteDialog();
   };
@@ -80,8 +98,10 @@ export default function AllCustomersPage() {
   };
 
   const getAddress = (address) => {
-    return (address ? (`${address.lane}, ${address.street}, ${address.city}, ${address.state}, ${address.country}, ${address.zipCode}`) : '')
-  }
+    return address
+      ? `${address.lane}, ${address.street}, ${address.city}, ${address.state}, ${address.country}, ${address.zipCode}`
+      : "";
+  };
 
   return (
     <>
@@ -113,15 +133,27 @@ export default function AllCustomersPage() {
                 <OrderListHead headLabel={TABLE_HEAD} />
                 <TableBody>
                   {customers.map((row) => {
-                    const { id, firstName, lastName, email, phone, address } =
-                      row;
+                    const {
+                      id,
+                      firstName,
+                      lastName,
+                      email,
+                      phone,
+                      address,
+                      status,
+                    } = row;
                     return (
                       <TableRow hover key={id}>
                         <TableCell align="left">{`${firstName} ${lastName}`}</TableCell>
                         <TableCell align="left">{email}</TableCell>
                         <TableCell align="left">{phone}</TableCell>
-                        <TableCell align="left">{getAddress(address)}</TableCell>
-                        {/* <TableCell align="right">
+                        <TableCell align="left">
+                          {getAddress(address)}
+                        </TableCell>
+                        <TableCell align="left">
+                          <Label color={"info"}>{status}</Label>
+                        </TableCell>
+                        <TableCell align="right">
                           <IconButton
                             size="large"
                             color="inherit"
@@ -129,7 +161,7 @@ export default function AllCustomersPage() {
                           >
                             <Iconify icon={"eva:more-vertical-fill"} />
                           </IconButton>
-                        </TableCell> */}
+                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -166,6 +198,26 @@ export default function AllCustomersPage() {
           },
         }}
       >
+        {selectedCustomerForAction &&
+          selectedCustomerForAction.status === STATUS.PENDING && (
+            <>
+              <MenuItem onClick={() => onApprovalCustomer(STATUS.APPROVED)}>
+                <Iconify
+                  sx={{ color: "success.main", mr: 2 }}
+                  icon={"material-symbols:check-circle"}
+                  // sx={{ mr: 2 }}
+                />
+                Approve
+              </MenuItem>
+              <MenuItem onClick={() => onApprovalCustomer(STATUS.REJECTED)}>
+                <Iconify
+                  icon={"mdi:close-circle"}
+                  sx={{ color: "error.main", mr: 2 }}
+                />
+                Reject
+              </MenuItem>
+            </>
+          )}
         <MenuItem
           sx={{ color: "error.main" }}
           onClick={() => setDeleteDialogOpen(true)}
@@ -179,8 +231,8 @@ export default function AllCustomersPage() {
         open={openDeleteDialog}
         title={"Delete"}
         contentText={"Are you sure want to delete?"}
-        handleConfirm={onDeleteOrder}
-        handleCancel={handleCloseDeleteDialog}
+        onConfirm={onDeleteCustomer}
+        onCancel={handleCloseDeleteDialog}
       />
     </>
   );

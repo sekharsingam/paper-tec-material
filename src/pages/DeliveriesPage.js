@@ -96,7 +96,7 @@ export default function DeliveriesPage() {
                         </TableCell>
                         <TableCell align="left">{orderId}</TableCell>
                         <TableCell align="left">
-                          <Label color={"info"}>{status}</Label>
+                          <Label color={"default"}>{status}</Label>
                         </TableCell>
 
                         <TableCell align="right">

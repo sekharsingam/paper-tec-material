@@ -1,25 +1,50 @@
 import axios from "axios";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { API_END_POINT } from "src/utils/constants";
-import { getOrdersDone } from "./ordersSlice";
+import { API_END_POINT, ROLE_ADMIN } from "src/utils/constants";
+import {
+  getAllPaymentDetailsDone,
+  getOrderDone,
+  getOrdersDone,
+  getPaymentDetailsDone,
+  getRequestOrdersDone,
+} from "./ordersSlice";
 
+const ORDERS_ENDPOINT = `${API_END_POINT}/api/v1/orders`;
 export const getOrders = (searchInput) => async (dispatch) => {
   axios
-    .get(
-      `${API_END_POINT}/api/v1/orders/getorders?searchInput=${
-        searchInput || ""
-      }`
-    )
+    .get(`${ORDERS_ENDPOINT}/getorders?searchInput=${searchInput || ""}`)
     .then((response) => {
       dispatch(getOrdersDone(response.data));
     });
 };
 
-export const createOrder = (orderPayload) => async (dispatch) => {
+export const getOrder = (orderId) => async (dispatch) => {
   axios
-    .post(`${API_END_POINT}/api/v1/orders/createorder`, orderPayload)
+    .get(`${ORDERS_ENDPOINT}/getorder?orderId=${orderId || ""}`)
     .then((response) => {
-      toast.success("Order has been created successfully.");
+      dispatch(getOrderDone(response.data));
+    });
+};
+
+export const getOrdersByCustomer =
+  (customerId, searchInput) => async (dispatch) => {
+    axios
+      .get(
+        `${ORDERS_ENDPOINT}/getordersbycustomer?customerId=${customerId}&searchInput=${
+          searchInput || ""
+        }`
+      )
+      .then((response) => {
+        dispatch(getOrdersDone(response.data));
+      });
+  };
+
+export const createOrderRequest = (orderPayload) => async (dispatch) => {
+  axios
+    .post(`${ORDERS_ENDPOINT}/createorderrequest`, orderPayload)
+    .then((response) => {
+      toast.success("Order request has been created successfully.");
     })
     .catch((err) => {
       toast.error("Error while creating the order");
@@ -28,7 +53,7 @@ export const createOrder = (orderPayload) => async (dispatch) => {
 
 export const updateOrder = (orderPayload) => async (dispatch) => {
   axios
-    .put(`${API_END_POINT}/api/v1/orders/updateorder`, orderPayload)
+    .put(`${ORDERS_ENDPOINT}/updateorder`, orderPayload)
     .then((response) => {
       toast.success("Order has been updated successfully.");
       dispatch(getOrders());
@@ -38,14 +63,52 @@ export const updateOrder = (orderPayload) => async (dispatch) => {
     });
 };
 
-export const deleteOrder = (orderId) => async (dispatch) => {
+export const deleteOrder = (orderId) => async (dispatch, state) => {
   axios
-    .delete(`${API_END_POINT}/api/v1/orders/deleteorder?orderId=${orderId}`)
+    .delete(`${ORDERS_ENDPOINT}/deleteorder?orderId=${orderId}`)
     .then((response) => {
       toast.success("Order has been deleted successfully.");
-      dispatch(getOrders());
+      const { loggedInUser } = state().auth;
+      if (loggedInUser.role === ROLE_ADMIN) {
+        dispatch(getOrders());
+      } else {
+        dispatch(getOrdersByCustomer(loggedInUser.customerId));
+      }
     })
     .catch((err) => {
       toast.error("Error while deleting the order");
     });
+};
+
+export const getRequestedOrders = (searchInput) => async (dispatch) => {
+  axios
+    .get(
+      `${ORDERS_ENDPOINT}/getrequestedorders?searchInput=${searchInput || ""}`
+    )
+    .then((response) => {
+      dispatch(getRequestOrdersDone(response.data));
+    });
+};
+
+export const orderApproval = (data) => async (dispatch) => {
+  axios.post(`${ORDERS_ENDPOINT}/orderapproval`, data).then((response) => {
+    toast.success(`Order has been ${data.status} successfully.`);
+    dispatch(getRequestedOrders());
+  });
+};
+
+export const getAllPaymentsDetails = (orderId) => async (dispatch) => {
+  axios
+    .get(`${ORDERS_ENDPOINT}/getpaymentsbyorder?orderId=${orderId}`)
+    .then((response) => {
+      dispatch(getAllPaymentDetailsDone(response.data));
+    });
+};
+
+export const addPayment = (data) => async (dispatch, state) => {
+  axios.post(`${ORDERS_ENDPOINT}/addpayment`, data).then((response) => {
+    toast.success(`payment added successfully.`);
+    dispatch(getAllPaymentsDetails(data.orderId));
+    dispatch(getOrder(data.orderId));
+  });
 };
