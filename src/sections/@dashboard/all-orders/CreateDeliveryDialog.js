@@ -19,9 +19,15 @@ CreateDeliveryDialog.propTypes = {
   open: PropTypes.bool,
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
+  order: PropTypes.object,
 };
 
-export default function CreateDeliveryDialog({ open, onConfirm, onCancel }) {
+export default function CreateDeliveryDialog({
+  open,
+  onConfirm,
+  order = {},
+  onCancel,
+}) {
   const [deliveryDate, setDeliveryDate] = useState(null);
   const [price, setPrice] = useState("");
   const [rollWeightUtilize, setRollWeightUtilize] = useState("");
@@ -97,6 +103,7 @@ export default function CreateDeliveryDialog({ open, onConfirm, onCancel }) {
               label="Roll Weight Utilize (Tons)"
               value={rollWeightUtilize}
               onChange={handleRollWeightUtilize}
+              helperText={`Remaining Roll Weight: ${order.remainingRollWeight}`}
             />
           </Stack>
         </DialogContent>

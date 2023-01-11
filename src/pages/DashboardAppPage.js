@@ -14,7 +14,7 @@ import {
   getReportsData,
   getSummaryData,
 } from "src/app/features/dashboard/dashboardAPI";
-import { numberFormat } from "src/utils/constants";
+import { numberFormat, ROLE_ADMIN } from "src/utils/constants";
 import moment from "moment";
 
 // ----------------------------------------------------------------------
@@ -29,17 +29,19 @@ export default function DashboardAppPage() {
     deliveryCount,
     reports = [],
   } = useSelector((state) => state.dashboard);
+  const { loggedInUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getSummaryData());
-    dispatch(
-      getReportsData({
-        requestType: "orders",
-        startDate: "2023-01-01T18:30:00Z",
-        endDate: "2023-01-31T18:30:00Z",
-        customerId: JSON.parse(localStorage.user).customerId,
-      })
-    );
+    const payload = {
+      requestType: "orders",
+      startDate: "2023-01-01T18:30:00Z",
+      endDate: "2023-01-31T18:30:00Z",
+    };
+    if (loggedInUser.role !== ROLE_ADMIN) {
+      payload.customerId = loggedInUser.customerId;
+    }
+    dispatch(getReportsData(payload));
   }, [dispatch]);
 
   return (
@@ -67,6 +69,7 @@ export default function DashboardAppPage() {
         <Grid container spacing={3}>
           {reports.map((order) => {
             const {
+              id,
               orderId,
               orderDate,
               rollWeight,
@@ -78,7 +81,7 @@ export default function DashboardAppPage() {
 
             const stillUtc = moment.utc(orderDate).toDate();
             return (
-              <Grid key={orderId} item md={4}>
+              <Grid key={id} item md={4}>
                 <Box
                   sx={{
                     "& > :not(style)": {
@@ -95,32 +98,37 @@ export default function DashboardAppPage() {
                   <Paper
                     sx={{
                       display: "grid",
-                      gridTemplateColumns: "repeat(2, 2fr)",
+                      gridTemplateColumns: "2fr 1fr",
+                      gap: "5px",
                     }}
                   >
                     {/* <Typography variant="subtitle1">Order Id</Typography> */}
                     <Typography variant="h4">{orderId}</Typography>
                     <Typography />
                     <Typography variant="body2">Order Date</Typography>
-                    <Typography variant="body2">
-                      {moment(stillUtc).local().format("YYYY-MM-DD")}
+                    <Typography variant="subtitle1">
+                      {new Intl.DateTimeFormat("en-IN").format(
+                        moment(stillUtc).local().toDate()
+                      )}
                     </Typography>
                     <Typography variant="body2">Roll Weight</Typography>
-                    <Typography variant="body2">{rollWeight}</Typography>
-                    <Typography variant="body2">Remaining Roll Weight</Typography>
+                    <Typography variant="subtitle1">{rollWeight}</Typography>
                     <Typography variant="body2">
+                      Remaining Roll Weight
+                    </Typography>
+                    <Typography variant="subtitle1">
                       {remainingRollWeight}
                     </Typography>
                     <Typography variant="body2">Total Amount</Typography>{" "}
-                    <Typography variant="body2">
+                    <Typography variant="subtitle1">
                       ₹ {numberFormat(totalAmount)}
                     </Typography>
                     <Typography variant="body2">Paid Amount</Typography>
-                    <Typography variant="body2" color={"#00AB55"}>
+                    <Typography variant="subtitle1" color={"#00AB55"}>
                       ₹ {numberFormat(amountPaid)}
                     </Typography>
                     <Typography variant="body2">Due Amount</Typography>
-                    <Typography variant="body2" color={"#e74c3c"}>
+                    <Typography variant="subtitle1" color={"#e74c3c"}>
                       ₹ {numberFormat(paymentPending)}
                     </Typography>
                   </Paper>

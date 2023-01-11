@@ -31,11 +31,11 @@ import Label from "src/components/label";
 // ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
-  { id: "name", label: "name", alignRight: false },
+  { id: "name", label: "Name", alignRight: false },
   { id: "email", label: "Email", alignRight: false },
   { id: "phone", label: "Phone", alignRight: false },
-  { id: "address", label: "address", alignRight: false },
-  { id: "status", label: "status", alignRight: false },
+  { id: "address", label: "Address", alignRight: false },
+  { id: "status", label: "Status", alignRight: false },
   { id: "" },
 ];
 

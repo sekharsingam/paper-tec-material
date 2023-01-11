@@ -14,22 +14,20 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import { STATUS } from "src/utils/constants";
 
 ChangeOrderStatusDialog.propTypes = {
   open: PropTypes.bool,
   onConfirm: PropTypes.func,
   onCancel: PropTypes.func,
+  statuses: PropTypes.array,
 };
 
-const orderStatuses = [
-  STATUS.PROCESSING,
-  STATUS.READY_FOR_DELIVERY,
-  STATUS.OUT_FOR_DELIVERY,
-  STATUS.COMPLETED,
-];
-
-export default function ChangeOrderStatusDialog({ open, onConfirm, onCancel }) {
+export default function ChangeOrderStatusDialog({
+  open,
+  onConfirm,
+  statuses,
+  onCancel,
+}) {
   const [status, setStatus] = useState(null);
 
   const handleStatusChange = (e) => {
@@ -76,7 +74,7 @@ export default function ChangeOrderStatusDialog({ open, onConfirm, onCancel }) {
                 label="Status"
                 onChange={handleStatusChange}
               >
-                {orderStatuses.map((ele) => (
+                {statuses.map((ele) => (
                   <MenuItem value={ele}>{ele}</MenuItem>
                 ))}
               </Select>

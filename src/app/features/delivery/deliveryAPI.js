@@ -26,3 +26,15 @@ export const createDelivery = (payload) => async (dispatch) => {
       toast.error("Error while creating the delivery");
     });
 };
+
+export const updateDelivery = (payload) => async (dispatch) => {
+  axios
+    .put(`${API_END_POINT}/api/v1/delivery/updatedelivery`, payload)
+    .then((response) => {
+      dispatch(getDeliveries());
+      toast.success("Delivery has been updated successfully.");
+    })
+    .catch((err) => {
+      toast.error("Error while updating the delivery");
+    });
+};

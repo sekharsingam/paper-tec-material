@@ -32,7 +32,7 @@ import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import { CustomSearchToolbar, DeleteDialog } from "src/shared";
 import { debounce } from "lodash";
-import { DEBOUNCE_TIME, ROLE_ADMIN } from "src/utils/constants";
+import { DEBOUNCE_TIME, ROLE_ADMIN, STATUS } from "src/utils/constants";
 import Label from "src/components/label";
 import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
 import { createDelivery } from "src/app/features/delivery/deliveryAPI";
@@ -306,6 +306,7 @@ export default function AllOrdersPage() {
       {openCreateDeliveryDialog && (
         <CreateDeliveryDialog
           open={openCreateDeliveryDialog}
+          order={selectedOrderForAction}
           onConfirm={onCreateDelivery}
           onCancel={handleCloseCreateDeliveryDialog}
         />
@@ -333,6 +334,12 @@ export default function AllOrdersPage() {
       {openChangeStatusDialog && (
         <ChangeOrderStatusDialog
           open={openChangeStatusDialog}
+          statuses={[
+            STATUS.PROCESSING,
+            STATUS.READY_FOR_DELIVERY,
+            STATUS.OUT_FOR_DELIVERY,
+            STATUS.COMPLETED,
+          ]}
           onConfirm={onChangeOrderStatus}
           onCancel={handleCloseChangeStatusDialog}
         />

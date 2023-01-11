@@ -49,7 +49,7 @@ const TABLE_HEAD = [
 ];
 
 export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
-  const [paymentDate, setPaymentDate] = useState();
+  const [paymentDate, setPaymentDate] = useState(null);
   const [amount, setAmount] = useState();
   const [notes, setNotes] = useState();
   const [showAddPaymentView, setShowAddPaymentView] = useState(false);
@@ -86,6 +86,10 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
         notes,
       })
     );
+    onCancelPayment();
+  };
+
+  const onCancelPayment = () => {
     setPaymentDate(null);
     setAmount("");
     setNotes("");
@@ -192,6 +196,7 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                   gap: 2,
                   width: "50%",
                   justifyContent: "center",
+                  marginLeft: "25%",
                 }}
               >
                 <LocalizationProvider dateAdapter={AdapterMoment}>
@@ -224,8 +229,18 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                   onChange={handleNotesChange}
                 />
                 <Button
+                  variant="outlined"
+                  onClick={onCancelPayment}
+                  // sx={{ width: "200px" }}
+                  // size="small"
+                  // startIcon={<Iconify icon="eva:plus-fill" />}
+                >
+                  Cancel
+                </Button>
+                <Button
                   variant="contained"
                   onClick={onSubmitPayment}
+                  // sx={{ width: "200px" }}
                   // size="small"
                   // startIcon={<Iconify icon="eva:plus-fill" />}
                 >

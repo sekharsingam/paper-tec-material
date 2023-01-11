@@ -14,7 +14,6 @@ export const deliverySlice = createSlice({
     }),
     createDeliveryDone: (state, action) => ({
       ...state,
-      deliveries: action.payload,
       createDeliveryCalling: false,
     }),
   },
