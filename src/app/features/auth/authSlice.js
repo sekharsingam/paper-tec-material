@@ -21,9 +21,17 @@ export const authSlice = createSlice({
     }),
     loginDone: (state, action) => ({
       ...state,
+      loginCalling: false,
+      loggedInUser: action.payload,
+      isLoggedIn: action.payload ? true : false,
+      loginError: null,
+    }),
+    loginDoneWithError: (state, action) => ({
+      ...state,
       loginError: action.payload,
       loginCalling: false,
-      isLoggedIn: action.payload ? false : true,
+      loggedInUser: null,
+      isLoggedIn: false,
     }),
     registrationCalling: (state) => ({
       ...state,
@@ -37,6 +45,7 @@ export const authSlice = createSlice({
     logout: (state, action) => ({
       ...state,
       isLoggedIn: false,
+      loggedInUser: null,
     }),
   },
   extraReducers: {},
@@ -45,6 +54,7 @@ export const authSlice = createSlice({
 export const {
   loginCalling,
   loginDone,
+  loginDoneWithError,
   registrationCalling,
   registrationDone,
   logout,

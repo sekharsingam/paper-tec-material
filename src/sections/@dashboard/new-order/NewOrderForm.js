@@ -28,13 +28,11 @@ export default function NewOrderForm({
   orderData,
 }) {
   const [orderDate, setOrderDate] = useState(null);
-  const [customerId, setCustomerName] = useState();
   const [rollWeight, setRollWeight] = useState();
   const [rollSize, setRollSize] = useState();
   const [cupSize, setCupSize] = useState();
   const [paperSupplier, setPaperSupplier] = useState();
 
-  const { customers } = useSelector((state) => state.customer);
   const { cupSize: CUP_SIZE_ITEMS, paperSupplier: PAPER_SUPPLIER_ITEMS } =
     useSelector((state) => state.masterData);
 
@@ -46,14 +44,12 @@ export default function NewOrderForm({
     if (orderData) {
       const {
         orderDate,
-        customerId,
         rollWeight,
         rollSize,
         cupSize,
         paperSupplier,
       } = orderData;
       setOrderDate(moment(orderDate).format());
-      setCustomerName(customerId);
       setRollWeight(rollWeight);
       setRollSize(rollSize);
       setCupSize(cupSize);
@@ -68,10 +64,6 @@ export default function NewOrderForm({
 
   const handleOrderDateChange = (newDate) => {
     setOrderDate(newDate);
-  };
-
-  const handleCustomerIdChange = (e) => {
-    setCustomerName(e.target.value);
   };
 
   const handleRollWeightChange = (e) => {
@@ -121,32 +113,16 @@ export default function NewOrderForm({
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
-
-        {/* <FormControl fullWidth>
-          <InputLabel id="customer-id">Customer Id</InputLabel>
-          <Select
-            labelId="customer-id"
-            id="customer-id"
-            value={customerId}
-            label="Customer Id"
-            onChange={handleCustomerIdChange}
-          >
-            {customers.map((ele) => (
-              <MenuItem value={ele.customerId}>{ele.name}</MenuItem>
-            ))}
-          </Select>
-        </FormControl> */}
-
         <TextField
           name="rollWeight"
           type={"number"}
-          label="Roll Weight (Tons)"
+          label="Roll Weight (Kgs)"
           value={rollWeight}
           onChange={handleRollWeightChange}
         />
         <TextField
           name="rollSize"
-          label="Roll Size (ml)"
+          label="Roll Size (cm)"
           type={"number"}
           value={rollSize}
           onChange={handleRollSizeChange}

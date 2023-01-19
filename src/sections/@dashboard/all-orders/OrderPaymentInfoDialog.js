@@ -7,8 +7,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Stack,
   Table,
   TableBody,
@@ -34,6 +38,7 @@ import {
 } from "src/app/features/orders/ordersAPI";
 import Label from "src/components/label";
 import { numberFormat } from "src/utils/constants";
+import { AppWidgetSummary } from "../app";
 
 OrderPaymentInfoDialog.propTypes = {
   open: PropTypes.bool,
@@ -41,18 +46,22 @@ OrderPaymentInfoDialog.propTypes = {
 };
 
 const TABLE_HEAD = [
-  { id: "orderId", label: "Order Id ", alignRight: false },
-  { id: "paymentDate", label: "Payment Date", alignRight: false },
-  { id: "Amount", label: "Amount", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
+  { id: "orderId", label: "Order Id " },
+  { id: "paymentDate", label: "Payment Date" },
+  { id: "Amount", label: "Amount" },
+  { id: "mode", label: "Mode" },
+  { id: "status", label: "Status" },
   //   { id: "" },
 ];
+
+const PAYMENT_MODES = ["CASH", "CARD", "CHEQUE", "BANK TRANSFER", "UPI"];
 
 export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
   const [paymentDate, setPaymentDate] = useState(null);
   const [amount, setAmount] = useState();
   const [notes, setNotes] = useState();
   const [showAddPaymentView, setShowAddPaymentView] = useState(false);
+  const [paymentMode, setPaymentMode] = useState(null);
 
   const { allPaymentDetails = [], orderDetails = {} } = useSelector(
     (state) => state.order
@@ -77,6 +86,10 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
     setNotes(e.target.value);
   };
 
+  const handlePaymentModeChange = (e) => {
+    setPaymentMode(e.target.value);
+  };
+
   const onSubmitPayment = () => {
     dispatch(
       addPayment({
@@ -84,6 +97,7 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
         paymentDate: moment.utc(paymentDate).format(),
         amount,
         notes,
+        mode: paymentMode,
       })
     );
     onCancelPayment();
@@ -131,7 +145,6 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
             <Box
               sx={{
                 display: "grid",
-                // flexWrap: "wrap",
                 gap: 2,
                 gridTemplateColumns: "repeat(3,1fr)",
                 "& > :not(style)": {
@@ -139,29 +152,25 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                   boxShadow:
                     "rgb(145 158 171 / 20%) 0px 0px 2px 0px, rgb(145 158 171 / 12%) 0px 12px 24px -4px",
                   borderRadius: 2,
-                  border: "1px solid",
-                  borderColor: "#ccc",
                 },
               }}
             >
-              <Paper>
-                <Typography variant="subtitle2">Total Amount</Typography>
-                <Typography variant="h4">
-                  ₹ {numberFormat(orderDetails.totalAmount || 0)}
-                </Typography>
-              </Paper>
-              <Paper>
-                <Typography variant="subtitle2"> Paid Amount</Typography>
-                <Typography variant="h4" color={"#00AB55"}>
-                  ₹ {numberFormat(orderDetails.amountPaid || 0)}
-                </Typography>
-              </Paper>
-              <Paper>
-                <Typography variant="subtitle2">Due Amount</Typography>
-                <Typography variant="h4" color={"#e74c3c"}>
-                  ₹ {numberFormat(orderDetails.paymentPending || 0)}
-                </Typography>
-              </Paper>
+              <AppWidgetSummary
+                title="Total Amount"
+                total={`₹ ${numberFormat(orderDetails.totalAmount || 0)}`}
+              />
+
+              <AppWidgetSummary
+                title="Paid Amount"
+                total={`₹ ${numberFormat(orderDetails.amountPaid || 0)}`}
+                color={"success"}
+              />
+
+              <AppWidgetSummary
+                title="Due Amount"
+                total={`₹ ${numberFormat(orderDetails.paymentPending || 0)}`}
+                color={"error"}
+              />
             </Box>
           </Stack>
           <Stack
@@ -220,11 +229,26 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                   onChange={handleAmountChange}
                 />
 
+                <FormControl fullWidth>
+                  <InputLabel id="paper-supplier">Payment Mode</InputLabel>
+                  <Select
+                    labelId="paper-supplier"
+                    id="paper-supplier"
+                    value={paymentMode}
+                    label="Paper Supplier"
+                    onChange={handlePaymentModeChange}
+                  >
+                    {PAYMENT_MODES.map((ele) => (
+                      <MenuItem value={ele}>{ele}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
                 <TextField
                   fullWidth
                   label="Notes"
                   multiline
-                  rows={4}
+                  rows={3}
                   value={notes}
                   onChange={handleNotesChange}
                 />
@@ -258,7 +282,8 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                   <OrderListHead headLabel={TABLE_HEAD} />
                   <TableBody>
                     {allPaymentDetails.map((row) => {
-                      const { id, orderId, paymentDate, amount, status } = row;
+                      const { id, orderId, paymentDate, amount, mode, status } =
+                        row;
                       const stillUtc = moment.utc(paymentDate).toDate();
 
                       return (
@@ -270,6 +295,7 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                           <TableCell align="left">
                             {numberFormat(amount)}
                           </TableCell>
+                          <TableCell align="left">{mode}</TableCell>
                           <TableCell align="left">
                             <Label color={"success"}>{"Paid"}</Label>
                           </TableCell>

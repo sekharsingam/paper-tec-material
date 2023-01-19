@@ -1,50 +1,33 @@
-import { Helmet } from "react-helmet-async";
-import { useEffect, useState } from "react";
 // @mui
 import {
   Card,
-  Table,
-  Stack,
-  Popover,
-  TableRow,
+  Container,
+  IconButton,
   MenuItem,
+  Popover,
+  Stack,
+  Table,
   TableBody,
   TableCell,
-  Container,
-  Typography,
-  IconButton,
   TableContainer,
+  TableRow,
+  Typography,
 } from "@mui/material";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRequestedOrders,
+  orderApproval,
+} from "src/app/features/orders/ordersAPI";
+import Label from "src/components/label";
+import { OrderListHead } from "src/sections/@dashboard/all-orders";
+import { CustomSearchToolbar, RejectReasonDialog } from "src/shared";
+import { getStatusColor, STATUS } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
 import Scrollbar from "../components/scrollbar";
-import {
-  EditOrderDialog,
-  OrderListHead,
-} from "src/sections/@dashboard/all-orders";
-import {
-  deleteOrder,
-  getOrders,
-  getOrdersByCustomer,
-  getRequestedOrders,
-  orderApproval,
-  updateOrder,
-} from "src/app/features/orders/ordersAPI";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import { CustomSearchToolbar, DeleteDialog } from "src/shared";
-import { debounce } from "lodash";
-import {
-  DEBOUNCE_TIME,
-  getStatusColor,
-  ROLE_ADMIN,
-  STATUS,
-} from "src/utils/constants";
-import Label from "src/components/label";
-import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
-import { createDelivery } from "src/app/features/delivery/deliveryAPI";
-
-// ----------------------------------------------------------------------
 
 const TABLE_HEAD = [
   { id: "orderDate", label: "Order Date", alignRight: false },
@@ -64,7 +47,7 @@ export default function RequestedOrdersPage() {
   const [openPopover, setPopoverOpen] = useState(null);
   const [selectedOrderForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
-
+  const [openRejectReasonDialog, setRejectReasonDialogOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const dispatch = useDispatch();
@@ -94,11 +77,20 @@ export default function RequestedOrdersPage() {
   };
 
   const onApprovalOrder = (status) => {
+    if (status === STATUS.REJECTED) {
+      setRejectReasonDialogOpen(true);
+      return;
+    }
+    onApproveOrRejectOrder(status, "");
+  };
+
+  const onApproveOrRejectOrder = (status, reason) => {
     dispatch(
       orderApproval({
         orderRequestId: selectedOrderForAction.orderRequestId,
         userId: JSON.parse(localStorage.user).customerId,
         status,
+        reason,
       })
     );
     handlePopoverClose();
@@ -111,6 +103,15 @@ export default function RequestedOrdersPage() {
   //       }, DEBOUNCE_TIME)
   //     );
   //   };
+
+  const handleCloseRejectReasonDialog = () => {
+    setRejectReasonDialogOpen(false);
+  };
+
+  const handleConfirmRejectReasonDialog = (reason) => {
+    onApproveOrRejectOrder(STATUS.REJECTED, reason);
+    handleCloseRejectReasonDialog();
+  };
 
   return (
     <>
@@ -255,6 +256,13 @@ export default function RequestedOrdersPage() {
             </>
           )}
       </Popover>
+
+      <RejectReasonDialog
+        open={openRejectReasonDialog}
+        title={"Reason for Reject the Order"}
+        onCancel={handleCloseRejectReasonDialog}
+        onConfirm={handleConfirmRejectReasonDialog}
+      />
     </>
   );
 }

@@ -44,7 +44,7 @@ export default function AppWidgetSummary({ title, total, icon:Icon, color = 'pri
       }}
       {...other}
     >
-      <StyledIcon
+      {/* <StyledIcon
         sx={{
           color: (theme) => theme.palette[color].dark,
           backgroundImage: (theme) =>
@@ -55,7 +55,7 @@ export default function AppWidgetSummary({ title, total, icon:Icon, color = 'pri
         }}
       >
         <Icon width={24} height={24} />
-      </StyledIcon>
+      </StyledIcon> */}
 
       <Typography variant="h3">{total}</Typography>
 

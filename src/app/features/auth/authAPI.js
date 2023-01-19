@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { API_END_POINT } from "src/utils/constants";
-import { loginCalling, loginDone, registrationCalling, registrationDone } from "./authSlice";
+import { loginCalling, loginDone, loginDoneWithError, registrationCalling, registrationDone } from "./authSlice";
 
 export const login = (payload) => async (dispatch) => {
   dispatch(loginCalling());
@@ -9,9 +9,9 @@ export const login = (payload) => async (dispatch) => {
     .post(`${API_END_POINT}/api/v1/paper/login`, payload)
     .then((response) => {
       localStorage.setItem("user", JSON.stringify(response.data));
-      dispatch(loginDone());
+      dispatch(loginDone(response.data));
     })
-    .catch((error) => dispatch(loginDone(error.response.data)));
+    .catch((error) => dispatch(loginDoneWithError(error.response.data)));
 };
 
 export const registration = (payload) => async (dispatch) => {

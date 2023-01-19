@@ -50,7 +50,7 @@ export default function DashboardAppPage() {
         <title> Dashboard | Paper Tech </title>
       </Helmet>
 
-      <Container maxWidth="xl">
+      <Container>
         {/* <Typography variant="h4" sx={{ mb: 2 }}>
           Hi, Welcome back
         </Typography> */}

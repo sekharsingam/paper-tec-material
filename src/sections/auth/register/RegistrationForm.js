@@ -10,6 +10,11 @@ import {
 import { LoadingButton } from "@mui/lab";
 
 import Iconify from "../../../components/iconify";
+import {
+  EMAIL_VALIDATION_REGEX,
+  PASSWORD_VALIDATION_REGEX,
+  PHONE_NUMBER_VALIDATION_REGEX,
+} from "src/utils/constants";
 
 export default function RegistrationForm({ onRegister }) {
   const [firstName, setFirstName] = useState("");
@@ -27,9 +32,24 @@ export default function RegistrationForm({ onRegister }) {
   const [country, setCountry] = useState("");
   const [zipCode, setZipCode] = useState("");
 
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isValidPhoneNum, setIsValidPhoneNum] = useState(true);
+  const [isValidPassword, setIsValidPassword] = useState(true);
   const [passwordMatch, setPasswordMatch] = useState(true);
 
-  const handleOnBlur = (e) => {
+  const handleOnEmailBlur = () => {
+    setIsValidEmail(new RegExp(EMAIL_VALIDATION_REGEX).test(email));
+  };
+
+  const handleOnPhoneNumBlur = () => {
+    setIsValidPhoneNum(new RegExp(PHONE_NUMBER_VALIDATION_REGEX).test(phone));
+  };
+
+  const handleOnPasswordBlur = (e) => {
+    setIsValidPassword(new RegExp(PASSWORD_VALIDATION_REGEX).test(password));
+  };
+
+  const handleOnResetPasswordBlur = (e) => {
     setPasswordMatch(e.target.value === password);
   };
 
@@ -77,12 +97,20 @@ export default function RegistrationForm({ onRegister }) {
           label="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          onBlur={handleOnEmailBlur}
+          error={email && !isValidEmail}
+          helperText={email && !isValidEmail ? "Please enter valid email" : ""}
         />
         <TextField
           name="phone"
           label="Phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          onBlur={handleOnPhoneNumBlur}
+          error={phone && !isValidPhoneNum}
+          helperText={
+            phone && !isValidPhoneNum ? "Please enter valid phone number" : ""
+          }
         />
         <TextField
           name="password"
@@ -90,6 +118,13 @@ export default function RegistrationForm({ onRegister }) {
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onBlur={handleOnPasswordBlur}
+          error={password && !isValidPassword}
+          helperText={
+            password && !isValidPassword
+              ? "Password must be minimum of eight characters, at least one letter and one number"
+              : ""
+          }
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -111,7 +146,7 @@ export default function RegistrationForm({ onRegister }) {
           type={showConfirmPassword ? "text" : "password"}
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
-          onBlur={handleOnBlur}
+          onBlur={handleOnResetPasswordBlur}
           error={!passwordMatch}
           helperText={
             !passwordMatch

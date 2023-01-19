@@ -18,7 +18,7 @@ import Iconify from "../components/iconify";
 import Scrollbar from "../components/scrollbar";
 import { OrderListHead } from "src/sections/@dashboard/all-orders";
 import { useDispatch, useSelector } from "react-redux";
-import { CustomSearchToolbar, DeleteDialog } from "src/shared";
+import { CustomSearchToolbar, DeleteDialog, RejectReasonDialog } from "src/shared";
 import {
   approveCustomer,
   deleteCustomer,
@@ -46,6 +46,7 @@ export default function AllCustomersPage() {
   const [selectedCustomerForAction, setSelectedOrderForAction] = useState(null);
   const [openDeleteDialog, setDeleteDialogOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+  const [openRejectReasonDialog, setRejectReasonDialogOpen] = useState(false);
 
   const { customers } = useSelector((state) => state.customer);
   const dispatch = useDispatch();
@@ -65,6 +66,14 @@ export default function AllCustomersPage() {
   };
 
   const onApprovalCustomer = (status) => {
+    if (status === STATUS.REJECTED) {
+      setRejectReasonDialogOpen(true);
+      return;
+    }
+    onApproveOrRejectCustomer(status, "");
+  };
+
+  const onApproveOrRejectCustomer = (status, reason) => {
     dispatch(
       approveCustomer({
         customerId: selectedCustomerForAction.customerId,
@@ -72,7 +81,6 @@ export default function AllCustomersPage() {
       })
     );
     handlePopoverClose();
-    handleCloseDeleteDialog();
   };
 
   const onDeleteCustomer = () => {
@@ -95,6 +103,15 @@ export default function AllCustomersPage() {
         setSearchValue(e.target.value);
       }, DEBOUNCE_TIME)
     );
+  };
+
+  const handleCloseRejectReasonDialog = () => {
+    setRejectReasonDialogOpen(false);
+  };
+
+  const handleConfirmRejectReasonDialog = (reason) => {
+    onApproveOrRejectCustomer(STATUS.REJECTED, reason);
+    handleCloseRejectReasonDialog();
   };
 
   const getAddress = (address) => {
@@ -233,6 +250,13 @@ export default function AllCustomersPage() {
         contentText={"Are you sure want to delete?"}
         onConfirm={onDeleteCustomer}
         onCancel={handleCloseDeleteDialog}
+      />
+
+      <RejectReasonDialog
+        open={openRejectReasonDialog}
+        title={"Reason for Reject the Customer"}
+        onCancel={handleCloseRejectReasonDialog}
+        onConfirm={handleConfirmRejectReasonDialog}
       />
     </>
   );

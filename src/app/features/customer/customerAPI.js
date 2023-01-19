@@ -20,7 +20,8 @@ export const approveCustomer = (data) => async (dispatch) => {
     .post(`${API_END_POINT}/api/v1/paper/accountapproval`, data)
     .then((response) => {
       toast.success(`Customer ${data.status} Successfully`);
-      // dispatch(getCustomersDone(response.data));
+      dispatch(getCustomers(''));
+
     });
 };
 

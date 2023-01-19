@@ -45,7 +45,7 @@ const TABLE_HEAD = [
   { id: "orderDate", label: "Order Date", alignRight: false },
   { id: "orderId", label: "Order Id ", alignRight: false },
   { id: "customerId", label: "Customer Id ", alignRight: false },
-  { id: "rollWeight", label: "Roll Weight", alignRight: false },
+  { id: "rollWeight", label: "Roll Weight | Remaining", alignRight: false },
   { id: "rollSize", label: "Roll Size", alignRight: false },
   { id: "cupSize", label: "Cup Size", alignRight: false },
   { id: "paperSupplier", label: "Paper Supplier", alignRight: false },
@@ -199,6 +199,7 @@ export default function AllOrdersPage() {
                       rollWeight,
                       rollSize,
                       cupSize,
+                      remainingRollWeight,
                       paperSupplier,
                       status,
                     } = row;
@@ -211,7 +212,7 @@ export default function AllOrdersPage() {
                         </TableCell>
                         <TableCell align="left">{orderId}</TableCell>
                         <TableCell align="left">{customerId}</TableCell>
-                        <TableCell align="left">{rollWeight}</TableCell>
+                        <TableCell align="left">{`${rollWeight} | ${remainingRollWeight}`}</TableCell>
                         <TableCell align="left">{rollSize}</TableCell>
                         <TableCell align="left">{cupSize}</TableCell>
                         <TableCell align="left">{paperSupplier}</TableCell>
