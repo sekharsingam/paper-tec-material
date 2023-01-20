@@ -1,35 +1,35 @@
 // @mui
 import {
   Card,
-  Container,
   IconButton,
   MenuItem,
-  Popover,
-  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Typography,
 } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getRequestedOrders,
   orderApproval,
 } from "src/app/features/orders/ordersAPI";
+import {
+  ActionPopover,
+  CustomSearchToolbar,
+  PageContainer,
+  RejectReasonDialog,
+  TableListHeader,
+} from "src/common";
 import Label from "src/components/label";
-import { OrderListHead } from "src/sections/@dashboard/all-orders";
-import { CustomSearchToolbar, RejectReasonDialog } from "src/shared";
 import { getStatusColor, STATUS } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
 import Scrollbar from "../components/scrollbar";
 
-const TABLE_HEAD = [
+const REQ_ORDERS_TABLE_HEAD = [
   { id: "orderDate", label: "Order Date", alignRight: false },
   { id: "orderRequestId", label: "Order Request Id", alignRight: false },
   { id: "customerId", label: "Customer Id ", alignRight: false },
@@ -115,28 +115,7 @@ export default function RequestedOrdersPage() {
 
   return (
     <>
-      <Helmet>
-        <title> Requested Orders | Paper Tech </title>
-      </Helmet>
-
-      <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={2}
-        >
-          <Typography variant="h4" gutterBottom>
-            Requested Orders
-          </Typography>
-          {/* <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            New Order
-          </Button> */}
-        </Stack>
-
+      <PageContainer title={"Requested Orders"}>
         <Card>
           <CustomSearchToolbar
             onRefresh={onRefresh}
@@ -146,7 +125,7 @@ export default function RequestedOrdersPage() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table size="medium">
-                <OrderListHead headLabel={TABLE_HEAD} />
+                <TableListHeader headLabel={REQ_ORDERS_TABLE_HEAD} />
                 <TableBody>
                   {requestedOrders.map((row) => {
                     const {
@@ -195,7 +174,10 @@ export default function RequestedOrdersPage() {
 
                   {requestedOrders.length === 0 && (
                     <TableRow hover>
-                      <TableCell colSpan={TABLE_HEAD.length} align="center">
+                      <TableCell
+                        colSpan={REQ_ORDERS_TABLE_HEAD.length}
+                        align="center"
+                      >
                         {"No Orders"}
                       </TableCell>
                     </TableRow>
@@ -204,37 +186,10 @@ export default function RequestedOrdersPage() {
               </Table>
             </TableContainer>
           </Scrollbar>
-
-          {/* <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={requestedOrders.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          /> */}
         </Card>
-      </Container>
+      </PageContainer>
 
-      <Popover
-        open={Boolean(openPopover)}
-        anchorEl={openPopover}
-        onClose={handlePopoverClose}
-        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 200,
-            "& .MuiMenuItem-root": {
-              px: 1,
-              typography: "body2",
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
+      <ActionPopover open={openPopover} onClose={handlePopoverClose}>
         {selectedOrderForAction &&
           selectedOrderForAction.status === STATUS.PENDING && (
             <>
@@ -255,7 +210,7 @@ export default function RequestedOrdersPage() {
               </MenuItem>
             </>
           )}
-      </Popover>
+      </ActionPopover>
 
       <RejectReasonDialog
         open={openRejectReasonDialog}

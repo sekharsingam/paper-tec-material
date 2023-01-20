@@ -1,24 +1,17 @@
-import { Helmet } from "react-helmet-async";
+import {
+  Container, Link, Typography
+} from "@mui/material";
 // @mui
 import { styled } from "@mui/material/styles";
-import {
-  Link,
-  Container,
-  Typography,
-  Divider,
-  Stack,
-  Button,
-} from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
+import { login } from "src/app/features/auth/authAPI";
+import { ApplicationTitle } from "src/common";
+import { COMPANY_NAME } from "src/utils/constants";
 // hooks
 import useResponsive from "../hooks/useResponsive";
-// components
-import Logo from "../components/logo";
-import Iconify from "../components/iconify";
 // sections
 import { LoginForm } from "../sections/auth/login";
-import { Navigate, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { login } from "src/app/features/auth/authAPI";
 
 // ----------------------------------------------------------------------
 
@@ -73,9 +66,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Helmet>
-        <title> Login | Paper Tech </title>
-      </Helmet>
+      <ApplicationTitle title={"Login"} />
 
       <StyledRoot>
         {mdUp && (
@@ -87,7 +78,7 @@ export default function LoginPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign in to Paper Tech
+              Sign in to {COMPANY_NAME}
             </Typography>
 
             <Typography variant="body2" sx={{ mb: 5 }}>

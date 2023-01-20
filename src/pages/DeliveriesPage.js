@@ -1,35 +1,33 @@
 import {
   Card,
-  Container,
   IconButton,
-  MenuItem,
-  Popover,
-  Stack,
-  Table,
+  MenuItem, Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableRow,
-  Typography,
+  TableRow
 } from "@mui/material";
 import { debounce } from "lodash";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { Helmet } from "react-helmet-async";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDeliveries,
-  updateDelivery,
+  updateDelivery
 } from "src/app/features/delivery/deliveryAPI";
+import {
+  ActionPopover,
+  CustomSearchToolbar,
+  PageContainer,
+  TableListHeader
+} from "src/common";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import Scrollbar from "src/components/scrollbar";
-import { OrderListHead } from "src/sections/@dashboard/all-orders";
 import ChangeOrderStatusDialog from "src/sections/@dashboard/all-orders/ChangeOrderStatusDialog";
-import { CustomSearchToolbar } from "src/shared";
 import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
 
-const TABLE_HEAD = [
+const DELIVERIES_TABLE_HEAD = [
   { id: "deliveryId", label: "Delivery Id " },
   { id: "deliveryDate", label: "Delivery Date" },
   { id: "orderId", label: "Order Id " },
@@ -91,22 +89,7 @@ export default function DeliveriesPage() {
 
   return (
     <>
-      <Helmet>
-        <title> Deliveries | Paper Tech </title>
-      </Helmet>
-
-      <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={2}
-        >
-          <Typography variant="h4" gutterBottom>
-            Deliveries
-          </Typography>
-        </Stack>
-
+      <PageContainer title={"Deliveries"}>
         <Card>
           <CustomSearchToolbar
             onRefresh={onRefresh}
@@ -116,7 +99,7 @@ export default function DeliveriesPage() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table size="small">
-                <OrderListHead headLabel={TABLE_HEAD} />
+                <TableListHeader headLabel={DELIVERIES_TABLE_HEAD} />
                 <TableBody>
                   {deliveries.map((row) => {
                     const {
@@ -156,7 +139,10 @@ export default function DeliveriesPage() {
 
                   {deliveries.length === 0 && (
                     <TableRow hover>
-                      <TableCell colSpan={TABLE_HEAD.length} align="center">
+                      <TableCell
+                        colSpan={DELIVERIES_TABLE_HEAD.length}
+                        align="center"
+                      >
                         {"No Deliveries"}
                       </TableCell>
                     </TableRow>
@@ -176,31 +162,14 @@ export default function DeliveriesPage() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           /> */}
         </Card>
-      </Container>
+      </PageContainer>
 
-      <Popover
-        open={Boolean(openPopover)}
-        anchorEl={openPopover}
-        onClose={handlePopoverClose}
-        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 200,
-            "& .MuiMenuItem-root": {
-              px: 1,
-              typography: "body2",
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
+      <ActionPopover open={openPopover} onClose={handlePopoverClose}>
         <MenuItem onClick={() => setChangeStatusDialogOpen(true)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
           Change Status
         </MenuItem>
-      </Popover>
+      </ActionPopover>
 
       {openChangeStatusDialog && (
         <ChangeOrderStatusDialog

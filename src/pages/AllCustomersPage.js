@@ -1,36 +1,38 @@
-import { Helmet } from "react-helmet-async";
-import { useEffect, useState } from "react";
 import {
   Card,
-  Table,
-  Stack,
-  Popover,
-  TableRow,
+  Divider,
+  IconButton,
   MenuItem,
+  Table,
   TableBody,
   TableCell,
-  Container,
-  Typography,
-  IconButton,
   TableContainer,
+  TableRow,
 } from "@mui/material";
-import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
-import { OrderListHead } from "src/sections/@dashboard/all-orders";
+import { debounce } from "lodash";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CustomSearchToolbar, DeleteDialog, RejectReasonDialog } from "src/shared";
 import {
   approveCustomer,
   deleteCustomer,
   getCustomers,
 } from "src/app/features/customer/customerAPI";
-import { debounce } from "lodash";
-import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
+import {
+  ActionPopover,
+  CustomSearchToolbar,
+  DeleteDialog,
+  PageContainer,
+  RejectReasonDialog,
+} from "src/common";
+import TableListHeader from "src/common/TableListHeader";
 import Label from "src/components/label";
+import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
+import Iconify from "../components/iconify";
+import Scrollbar from "../components/scrollbar";
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = [
+const CUSTOMER_TABLE_HEAD = [
   { id: "name", label: "Name", alignRight: false },
   { id: "email", label: "Email", alignRight: false },
   { id: "phone", label: "Phone", alignRight: false },
@@ -122,22 +124,7 @@ export default function AllCustomersPage() {
 
   return (
     <>
-      <Helmet>
-        <title> All Customers | Paper Tech </title>
-      </Helmet>
-
-      <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={2}
-        >
-          <Typography variant="h4" gutterBottom>
-            All Customers
-          </Typography>
-        </Stack>
-
+      <PageContainer title={"All Customers"}>
         <Card>
           <CustomSearchToolbar
             onRefresh={onRefresh}
@@ -147,7 +134,7 @@ export default function AllCustomersPage() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table size="medium">
-                <OrderListHead headLabel={TABLE_HEAD} />
+                <TableListHeader headLabel={CUSTOMER_TABLE_HEAD} />
                 <TableBody>
                   {customers.map((row) => {
                     const {
@@ -185,7 +172,10 @@ export default function AllCustomersPage() {
 
                   {customers.length === 0 && (
                     <TableRow hover>
-                      <TableCell colSpan={TABLE_HEAD.length} align="center">
+                      <TableCell
+                        colSpan={CUSTOMER_TABLE_HEAD.length}
+                        align="center"
+                      >
                         {"No Customers"}
                       </TableCell>
                     </TableRow>
@@ -195,26 +185,9 @@ export default function AllCustomersPage() {
             </TableContainer>
           </Scrollbar>
         </Card>
-      </Container>
+      </PageContainer>
 
-      <Popover
-        open={Boolean(openPopover)}
-        anchorEl={openPopover}
-        onClose={handlePopoverClose}
-        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            "& .MuiMenuItem-root": {
-              px: 1,
-              typography: "body2",
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
+      <ActionPopover open={openPopover} onClose={handlePopoverClose}>
         {selectedCustomerForAction &&
           selectedCustomerForAction.status === STATUS.PENDING && (
             <>
@@ -233,6 +206,7 @@ export default function AllCustomersPage() {
                 />
                 Reject
               </MenuItem>
+              <Divider sx={{ borderStyle: "dashed" }} />
             </>
           )}
         <MenuItem
@@ -242,7 +216,7 @@ export default function AllCustomersPage() {
           <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
-      </Popover>
+      </ActionPopover>
 
       <DeleteDialog
         open={openDeleteDialog}

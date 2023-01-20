@@ -1,21 +1,14 @@
-import { Helmet } from "react-helmet-async";
-import { faker } from "@faker-js/faker";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { Grid, Container, Typography, Box, Paper, Stack } from "@mui/material";
-import { AppNewsUpdate, AppWidgetSummary } from "../sections/@dashboard/app";
-import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import { useEffect } from "react";
-import {
-  LocalShipping,
-  PeopleAltOutlined,
-  ShoppingCart,
-} from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getReportsData,
-  getSummaryData,
+  getSummaryData
 } from "src/app/features/dashboard/dashboardAPI";
+import { PageContainer } from "src/common";
 import { numberFormat, ROLE_ADMIN } from "src/utils/constants";
-import moment from "moment";
 
 // ----------------------------------------------------------------------
 
@@ -46,26 +39,7 @@ export default function DashboardAppPage() {
 
   return (
     <>
-      <Helmet>
-        <title> Dashboard | Paper Tech </title>
-      </Helmet>
-
-      <Container>
-        {/* <Typography variant="h4" sx={{ mb: 2 }}>
-          Hi, Welcome back
-        </Typography> */}
-
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={2}
-        >
-          <Typography variant="h4" gutterBottom>
-            Dashboard
-          </Typography>
-        </Stack>
-
+      <PageContainer title={"Dashboard"}>
         <Grid container spacing={3}>
           {reports.map((order) => {
             const {
@@ -202,7 +176,7 @@ export default function DashboardAppPage() {
             />
           </Grid> */}
         </Grid>
-      </Container>
+      </PageContainer>
     </>
   );
 }

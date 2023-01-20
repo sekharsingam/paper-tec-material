@@ -1,47 +1,46 @@
-import { Helmet } from "react-helmet-async";
-import { useEffect, useState } from "react";
 // @mui
 import {
   Card,
-  Table,
-  Stack,
-  Popover,
-  TableRow,
+  Divider,
+  IconButton,
   MenuItem,
+  Table,
   TableBody,
   TableCell,
-  Container,
-  Typography,
-  IconButton,
   TableContainer,
+  TableRow,
 } from "@mui/material";
-// components
-import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
-import {
-  EditOrderDialog,
-  OrderListHead,
-} from "src/sections/@dashboard/all-orders";
+import { debounce } from "lodash";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createDelivery } from "src/app/features/delivery/deliveryAPI";
 import {
   deleteOrder,
   getOrders,
   getOrdersByCustomer,
   updateOrder,
 } from "src/app/features/orders/ordersAPI";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import { CustomSearchToolbar, DeleteDialog } from "src/shared";
-import { debounce } from "lodash";
-import { DEBOUNCE_TIME, ROLE_ADMIN, STATUS } from "src/utils/constants";
+import {
+  ActionPopover,
+  CustomSearchToolbar,
+  DeleteDialog,
+  PageContainer,
+  TableListHeader,
+} from "src/common";
 import Label from "src/components/label";
-import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
-import { createDelivery } from "src/app/features/delivery/deliveryAPI";
+import { EditOrderDialog } from "src/sections/@dashboard/all-orders";
 import ChangeOrderStatusDialog from "src/sections/@dashboard/all-orders/ChangeOrderStatusDialog";
+import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
 import OrderPaymentInfoDialog from "src/sections/@dashboard/all-orders/OrderPaymentInfoDialog";
+import { DEBOUNCE_TIME, ROLE_ADMIN, STATUS } from "src/utils/constants";
+// components
+import Iconify from "../components/iconify";
+import Scrollbar from "../components/scrollbar";
 
 // ----------------------------------------------------------------------
 
-const TABLE_HEAD = [
+const ORDER_TABLE_HEAD = [
   { id: "orderDate", label: "Order Date", alignRight: false },
   { id: "orderId", label: "Order Id ", alignRight: false },
   { id: "customerId", label: "Customer Id ", alignRight: false },
@@ -157,28 +156,7 @@ export default function AllOrdersPage() {
 
   return (
     <>
-      <Helmet>
-        <title> All Orders | Paper Tech </title>
-      </Helmet>
-
-      <Container>
-        <Stack
-          direction="row"
-          alignItems="center"
-          justifyContent="space-between"
-          mb={2}
-        >
-          <Typography variant="h4" gutterBottom>
-            All Orders
-          </Typography>
-          {/* <Button
-            variant="contained"
-            startIcon={<Iconify icon="eva:plus-fill" />}
-          >
-            New Order
-          </Button> */}
-        </Stack>
-
+      <PageContainer title={"All Orders"}>
         <Card>
           <CustomSearchToolbar
             onRefresh={onRefresh}
@@ -188,7 +166,7 @@ export default function AllOrdersPage() {
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
               <Table size="small">
-                <OrderListHead headLabel={TABLE_HEAD} />
+                <TableListHeader headLabel={ORDER_TABLE_HEAD} />
                 <TableBody>
                   {orders.map((row) => {
                     const {
@@ -235,7 +213,10 @@ export default function AllOrdersPage() {
 
                   {orders.length === 0 && (
                     <TableRow hover>
-                      <TableCell colSpan={TABLE_HEAD.length} align="center">
+                      <TableCell
+                        colSpan={ORDER_TABLE_HEAD.length}
+                        align="center"
+                      >
                         {"No Orders"}
                       </TableCell>
                     </TableRow>
@@ -255,26 +236,9 @@ export default function AllOrdersPage() {
             onRowsPerPageChange={handleChangeRowsPerPage}
           /> */}
         </Card>
-      </Container>
+      </PageContainer>
 
-      <Popover
-        open={Boolean(openPopover)}
-        anchorEl={openPopover}
-        onClose={handlePopoverClose}
-        anchorOrigin={{ vertical: "top", horizontal: "left" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 200,
-            "& .MuiMenuItem-root": {
-              px: 1,
-              typography: "body2",
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
+      <ActionPopover open={openPopover} onClose={handlePopoverClose}>
         <MenuItem onClick={() => setCreateDeliveryDialogOpen(true)}>
           <Iconify icon={"eva:plus-circle-fill"} sx={{ mr: 2 }} />
           Create Delivery
@@ -295,6 +259,8 @@ export default function AllOrdersPage() {
           Payment Info
         </MenuItem>
 
+        <Divider sx={{ borderStyle: "dashed" }} />
+
         <MenuItem
           sx={{ color: "error.main" }}
           onClick={() => setDeleteDialogOpen(true)}
@@ -302,7 +268,7 @@ export default function AllOrdersPage() {
           <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
-      </Popover>
+      </ActionPopover>
 
       {openCreateDeliveryDialog && (
         <CreateDeliveryDialog

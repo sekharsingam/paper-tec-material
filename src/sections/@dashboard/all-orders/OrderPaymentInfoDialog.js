@@ -25,7 +25,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import Scrollbar from "src/components/scrollbar";
-import OrderListHead from "./OrderListHead";
+import OrderListHead from "../../../common/TableListHeader";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
 import Iconify from "src/components/iconify";

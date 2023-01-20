@@ -16,6 +16,7 @@ import account from "../../../_mock/account";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "src/app/features/auth/authSlice";
+import { ActionPopover } from "src/common";
 
 // ----------------------------------------------------------------------
 
@@ -78,25 +79,7 @@ export default function AccountPopover() {
         <Avatar src={account.photoURL} />
       </IconButton>
 
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        PaperProps={{
-          sx: {
-            p: 0,
-            mt: 1.5,
-            ml: 0.75,
-            width: 180,
-            "& .MuiMenuItem-root": {
-              typography: "body2",
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
+      <ActionPopover open={open} onClose={handleClose}>
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
             {`${loggedUserDetails.firstName} ${loggedUserDetails.lastName}`}
@@ -121,7 +104,7 @@ export default function AccountPopover() {
         <MenuItem onClick={onLogOut} sx={{ m: 1 }}>
           Logout
         </MenuItem>
-      </Popover>
+      </ActionPopover>
     </>
   );
 }

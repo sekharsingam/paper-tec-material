@@ -1,18 +1,15 @@
-import { Helmet } from "react-helmet-async";
+import { Container, Link, Typography } from "@mui/material";
 // @mui
 import { styled } from "@mui/material/styles";
-import {
-  Link,
-  Container,
-  Typography,
-} from "@mui/material";
-
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { registration } from "src/app/features/auth/authAPI";
+import { RegistrationForm } from "src/sections/auth/register";
+import { ApplicationTitle } from "src/common";
+import { COMPANY_NAME } from "src/utils/constants";
 import useResponsive from "../hooks/useResponsive";
 
-import { RegistrationForm } from "src/sections/auth/register";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { registration } from "src/app/features/auth/authAPI";
+
 
 // ----------------------------------------------------------------------
 
@@ -57,15 +54,13 @@ export default function RegistrationPage() {
 
   const onRegister = (data) => {
     console.log(data);
-    dispatch(registration(data))    
+    dispatch(registration(data));
   };
 
   return (
     <>
-      <Helmet>
-        <title> Registration | Paper Tech </title>
-      </Helmet>
-
+      <ApplicationTitle title={"Registration"} />
+      
       <StyledRoot>
         {mdUp && (
           <StyledSection>
@@ -76,7 +71,7 @@ export default function RegistrationPage() {
         <Container maxWidth="md">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign up to Paper Tech
+              Sign up to {COMPANY_NAME}
             </Typography>
             <Typography variant="body2">
               Already have an account? {""}

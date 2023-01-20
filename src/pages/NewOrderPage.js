@@ -1,10 +1,10 @@
-import { Helmet } from "react-helmet-async";
+import { Container, Typography } from "@mui/material";
 // @mui
 import { styled } from "@mui/material/styles";
-import { Container, Typography } from "@mui/material";
-import NewOrderForm from "src/sections/@dashboard/new-order/NewOrderForm";
 import { useDispatch } from "react-redux";
 import { createOrderRequest } from "src/app/features/orders/ordersAPI";
+import NewOrderFormTumeric from "src/sections/@dashboard/new-order/NewOrderFormTumeric";
+import { ApplicationTitle } from "src/common";
 
 // ----------------------------------------------------------------------
 
@@ -35,9 +35,7 @@ export default function NewOrderPage() {
 
   return (
     <>
-      <Helmet>
-        <title> New Order Request | Paper Tech</title>
-      </Helmet>
+      <ApplicationTitle title={"New Order Request"} />
 
       <Typography variant="h4" gutterBottom>
         New Order Request
@@ -45,7 +43,8 @@ export default function NewOrderPage() {
       <StyledRoot>
         <Container maxWidth="md">
           <StyledContent>
-            <NewOrderForm onSubmit={handleSubmitForm} />
+            {/* <NewOrderForm onSubmit={handleSubmitForm} /> */}
+            <NewOrderFormTumeric onSubmit={handleSubmitForm} />
           </StyledContent>
         </Container>
       </StyledRoot>
