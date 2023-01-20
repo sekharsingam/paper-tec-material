@@ -24,7 +24,7 @@ import {
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import Scrollbar from "src/components/scrollbar";
-import ChangeOrderStatusDialog from "src/sections/@dashboard/all-orders/ChangeOrderStatusDialog";
+import { ChangeOrderStatusDialog } from "src/sections/dashboard/all-orders";
 import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
 
 const DELIVERIES_TABLE_HEAD = [

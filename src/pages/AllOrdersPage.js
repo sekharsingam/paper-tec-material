@@ -29,10 +29,12 @@ import {
   TableListHeader,
 } from "src/common";
 import Label from "src/components/label";
-import { EditOrderDialog } from "src/sections/@dashboard/all-orders";
-import ChangeOrderStatusDialog from "src/sections/@dashboard/all-orders/ChangeOrderStatusDialog";
-import CreateDeliveryDialog from "src/sections/@dashboard/all-orders/CreateDeliveryDialog";
-import OrderPaymentInfoDialog from "src/sections/@dashboard/all-orders/OrderPaymentInfoDialog";
+import {
+  ChangeOrderStatusDialog,
+  CreateDeliveryDialog,
+  EditOrderDialog,
+  OrderPaymentInfoDialog,
+} from "src/sections/dashboard/all-orders";
 import { DEBOUNCE_TIME, ROLE_ADMIN, STATUS } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";

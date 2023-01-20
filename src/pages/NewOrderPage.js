@@ -3,7 +3,7 @@ import { Container, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useDispatch } from "react-redux";
 import { createOrderRequest } from "src/app/features/orders/ordersAPI";
-import NewOrderFormTumeric from "src/sections/@dashboard/new-order/NewOrderFormTumeric";
+import NewOrderFormTumeric from "src/sections/dashboard/new-order/NewOrderFormTumeric";
 import { ApplicationTitle } from "src/common";
 
 // ----------------------------------------------------------------------
