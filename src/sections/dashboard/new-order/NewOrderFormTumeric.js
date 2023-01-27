@@ -12,10 +12,14 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { getCustomers } from "src/app/features/customer/customerAPI";
 import { getMasterData } from "src/app/features/masterData/masterDataAPI";
-import { PACKAGE_SIZES, TUMERIC_ORDER_TYPE } from "src/utils/constants";
+import {
+  HONEY_PACKAGE_SIZES,
+  PACKAGE_SIZES,
+  TUMERIC_PRODUCT_TYPE,
+} from "src/utils/constants";
 
 NewOrderFormTumeric.propTypes = {
   onSubmit: PropTypes.func,
@@ -29,9 +33,9 @@ export default function NewOrderFormTumeric({
   orderData,
 }) {
   const [orderDate, setOrderDate] = useState(null);
-  const [quantity, setQuantity] = useState();
-  const [orderType, setOrderType] = useState();
-  const [packingSize, setPackingSize] = useState();
+  const [quantity, setQuantity] = useState("");
+  const [productType, setOrderType] = useState("");
+  const [packingSize, setPackingSize] = useState("");
 
   //   const { cupSize: CUP_SIZE_ITEMS, paperSupplier: PAPER_SUPPLIER_ITEMS } =
   //     useSelector((state) => state.masterData);
@@ -41,20 +45,19 @@ export default function NewOrderFormTumeric({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // if (orderData) {
-    //   const { orderDate, rollWeight, rollSize, cupSize, paperSupplier } =
-    //     orderData;
-    //   setOrderDate(moment(orderDate).format());
-    //   setRollWeight(rollWeight);
-    //   setRollSize(rollSize);
-    //   setCupSize(cupSize);
-    //   setPaperSupplier(paperSupplier);
-    // }
+    if (orderData) {
+      const { orderDate, quantity, productType, packingSize } =
+        orderData;
+      setOrderDate(moment(orderDate).format());
+      setQuantity(quantity);
+      setOrderType(productType);
+      setPackingSize(packingSize);
+    }
   }, [orderData]);
 
   useEffect(() => {
-    dispatch(getCustomers());
-    dispatch(getMasterData());
+    // dispatch(getCustomers());
+    // dispatch(getMasterData());
   }, []);
 
   const handleOrderDateChange = (newDate) => {
@@ -65,8 +68,9 @@ export default function NewOrderFormTumeric({
     setQuantity(e.target.value);
   };
 
-  const handleOrderTypeChange = (event) => {
+  const handleProductTypeChange = (event) => {
     setOrderType(event.target.value);
+    setPackingSize(null);
   };
 
   const handlePackingSizeChange = (event) => {
@@ -77,12 +81,14 @@ export default function NewOrderFormTumeric({
     const payload = {
       orderDate: moment.utc(orderDate).format(),
       customerId: loggedUserDetails.customerId,
-      orderType,
+      productType,
       packingSize,
       quantity: Number(quantity),
     };
     onSubmit(payload);
   };
+
+  console.log(packingSize);
 
   return (
     <>
@@ -104,16 +110,18 @@ export default function NewOrderFormTumeric({
           />
         </LocalizationProvider>
         <FormControl fullWidth>
-          <InputLabel id="order-type">Order Type</InputLabel>
+          <InputLabel id="product-type">Product Type</InputLabel>
           <Select
-            labelId="order-type"
-            id="order-type"
-            value={orderType}
-            label="Order Type"
-            onChange={handleOrderTypeChange}
+            labelId="product-type"
+            id="product-type"
+            value={productType}
+            label="Product Type"
+            onChange={handleProductTypeChange}
           >
-            {TUMERIC_ORDER_TYPE.map((ele) => (
-              <MenuItem value={ele}>{ele}</MenuItem>
+            {TUMERIC_PRODUCT_TYPE.map((ele) => (
+              <MenuItem key={ele} value={ele}>
+                {ele}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -127,8 +135,13 @@ export default function NewOrderFormTumeric({
             label="Packing Size"
             onChange={handlePackingSizeChange}
           >
-            {PACKAGE_SIZES.map((ele) => (
-              <MenuItem value={ele}>{ele}</MenuItem>
+            {(productType === "Honey"
+              ? HONEY_PACKAGE_SIZES
+              : PACKAGE_SIZES
+            ).map((ele) => (
+              <MenuItem key={ele.value} value={ele.value}>
+                {ele.label}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>

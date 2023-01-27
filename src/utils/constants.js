@@ -1,5 +1,6 @@
-export const API_END_POINT = "http://localhost:8080";
-export const COMPANY_NAME = "Paper Tech";
+const PORT = 8081;
+export const API_END_POINT = `http://localhost:${PORT}`;
+export const COMPANY_NAME = "Suchi IT";
 export const DEBOUNCE_TIME = 500;
 export const EMAIL_VALIDATION_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
 export const PHONE_NUMBER_VALIDATION_REGEX =
@@ -9,7 +10,7 @@ export const PASSWORD_VALIDATION_REGEX =
 
 // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:
 
-export const TUMERIC_ORDER_TYPE = [
+export const TUMERIC_PRODUCT_TYPE = [
   "Turmeric powder",
   "Coriander Powder",
   "Chilli Powder",
@@ -19,13 +20,18 @@ export const TUMERIC_ORDER_TYPE = [
 ];
 
 export const PACKAGE_SIZES = [
-  "50 gms",
-  "100gms",
-  "200gms",
-  "500gms",
-  "1kg",
-  "25kg",
-  "50kg",
+  { value: 50, label: "50gms" },
+  { value: 100, label: "100gms" },
+  { value: 200, label: "200gms" },
+  { value: 500, label: "500gms" },
+  { value: 1000, label: "1kg" },
+  { value: 25000, label: "25kg" },
+  { value: 50000, label: "50kg" },
+];
+
+export const HONEY_PACKAGE_SIZES = [
+  { value: 500, label: "500ml" },
+  { value: 1000, label: "1L" },
 ];
 
 export const ROLE_ADMIN = "ADMIN";

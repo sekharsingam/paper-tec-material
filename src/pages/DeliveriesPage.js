@@ -1,40 +1,18 @@
-import {
-  Card,
-  IconButton,
-  MenuItem, Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow
-} from "@mui/material";
+import { Card, IconButton, MenuItem } from "@mui/material";
 import { debounce } from "lodash";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDeliveries,
-  updateDelivery
+  updateDelivery,
 } from "src/app/features/delivery/deliveryAPI";
-import {
-  ActionPopover,
-  CustomSearchToolbar,
-  PageContainer,
-  TableListHeader
-} from "src/common";
+import { ActionPopover, CustomSearchToolbar, PageContainer } from "src/common";
+import TableList from "src/common/TableList";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
-import Scrollbar from "src/components/scrollbar";
 import { ChangeOrderStatusDialog } from "src/sections/dashboard/all-orders";
-import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
-
-const DELIVERIES_TABLE_HEAD = [
-  { id: "deliveryId", label: "Delivery Id " },
-  { id: "deliveryDate", label: "Delivery Date" },
-  { id: "orderId", label: "Order Id " },
-  { id: "rollWeight", label: "Roll Weight Utilize" },
-  { id: "status", label: "Status" },
-  { id: "" },
-];
+import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
 
 export default function DeliveriesPage() {
   const [searchValue, setSearchValue] = useState("");
@@ -87,6 +65,70 @@ export default function DeliveriesPage() {
     setPopoverOpen(null);
   };
 
+  const DELIVERIES_TABLE_COLUMNS = [
+    { id: "deliveryId", label: "Delivery Id" },
+    {
+      id: "deliveryDate",
+      label: "Delivery Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    { id: "orderId", label: "Order Id " },
+    { id: "rollWeight", label: "Roll Weight Utilize" },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    {
+      id: "",
+      label: "",
+      dataFormat: (cell, row) => (
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => handleOpenMenu(e, row)}
+        >
+          <Iconify icon={"eva:more-vertical-fill"} />
+        </IconButton>
+      ),
+    },
+  ];
+
+  const TUMERIC_DELIVERIES_TABLE_COLUMNS = [
+    { id: "deliveryId", label: "Delivery Id" },
+    {
+      id: "deliveryDate",
+      label: "Delivery Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    { id: "orderId", label: "Order Id " },
+    { id: "quantity", label: "Quantity" },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    {
+      id: "",
+      label: "",
+      dataFormat: (cell, row) => (
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => handleOpenMenu(e, row)}
+        >
+          <Iconify icon={"eva:more-vertical-fill"} />
+        </IconButton>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageContainer title={"Deliveries"}>
@@ -95,72 +137,12 @@ export default function DeliveriesPage() {
             onRefresh={onRefresh}
             onSearchChange={onSearchChange}
           />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table size="small">
-                <TableListHeader headLabel={DELIVERIES_TABLE_HEAD} />
-                <TableBody>
-                  {deliveries.map((row) => {
-                    const {
-                      id,
-                      deliveryId,
-                      deliveryDate,
-                      orderId,
-                      rollWeight,
-                      status,
-                    } = row;
-                    const stillUtc = moment.utc(deliveryDate).toDate();
-
-                    return (
-                      <TableRow hover key={id}>
-                        <TableCell align="left">{deliveryId}</TableCell>
-                        <TableCell align="left">
-                          {moment(stillUtc).local().format("YYYY-MM-DD")}
-                        </TableCell>
-                        <TableCell align="left">{orderId}</TableCell>
-                        <TableCell align="left">{rollWeight}</TableCell>
-                        <TableCell align="left">
-                          <Label color={getStatusColor(status)}>{status}</Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            onClick={(e) => handleOpenMenu(e, row)}
-                          >
-                            <Iconify icon={"eva:more-vertical-fill"} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-
-                  {deliveries.length === 0 && (
-                    <TableRow hover>
-                      <TableCell
-                        colSpan={DELIVERIES_TABLE_HEAD.length}
-                        align="center"
-                      >
-                        {"No Deliveries"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          {/* <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={orders.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          /> */}
+          <TableList
+            size={"small"}
+            data={deliveries}
+            columns={TUMERIC_DELIVERIES_TABLE_COLUMNS}
+            noDataText={"No Deliveries"}
+          />
         </Card>
       </PageContainer>
 

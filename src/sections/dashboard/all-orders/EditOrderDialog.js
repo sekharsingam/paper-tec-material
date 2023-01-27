@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import NewOrderForm from "../new-order/NewOrderForm";
+import NewOrderFormTumeric from "../new-order/NewOrderFormTumeric";
 
 EditOrderDialog.propTypes = {
   open: PropTypes.bool,
@@ -42,11 +43,16 @@ export default function EditOrderDialog({
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <NewOrderForm
+          {/* <NewOrderForm
             buttonLabel="Update"
             orderData={orderData}
             onSubmit={onConfirm}
-          />
+          /> */}
+          <NewOrderFormTumeric
+            buttonLabel="Update"
+            orderData={orderData}
+            onSubmit={onConfirm}
+          /> 
         </DialogContent>
       </Dialog>
     </div>

@@ -3,12 +3,7 @@ import {
   Card,
   Divider,
   IconButton,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
+  MenuItem
 } from "@mui/material";
 import { debounce } from "lodash";
 import moment from "moment";
@@ -19,40 +14,25 @@ import {
   deleteOrder,
   getOrders,
   getOrdersByCustomer,
-  updateOrder,
+  updateOrder
 } from "src/app/features/orders/ordersAPI";
 import {
   ActionPopover,
   CustomSearchToolbar,
   DeleteDialog,
-  PageContainer,
-  TableListHeader,
+  PageContainer
 } from "src/common";
+import TableList from "src/common/TableList";
 import Label from "src/components/label";
 import {
   ChangeOrderStatusDialog,
   CreateDeliveryDialog,
   EditOrderDialog,
-  OrderPaymentInfoDialog,
+  OrderPaymentInfoDialog
 } from "src/sections/dashboard/all-orders";
 import { DEBOUNCE_TIME, ROLE_ADMIN, STATUS } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
-
-// ----------------------------------------------------------------------
-
-const ORDER_TABLE_HEAD = [
-  { id: "orderDate", label: "Order Date", alignRight: false },
-  { id: "orderId", label: "Order Id ", alignRight: false },
-  { id: "customerId", label: "Customer Id ", alignRight: false },
-  { id: "rollWeight", label: "Roll Weight | Remaining", alignRight: false },
-  { id: "rollSize", label: "Roll Size", alignRight: false },
-  { id: "cupSize", label: "Cup Size", alignRight: false },
-  { id: "paperSupplier", label: "Paper Supplier", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
-  { id: "" },
-];
 
 // ----------------------------------------------------------------------
 
@@ -156,6 +136,68 @@ export default function AllOrdersPage() {
     );
   };
 
+  const ORDER_TABLE_HEAD = [
+    {
+      id: "orderDate",
+      label: "Order Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    { id: "orderId", label: "Order Id " },
+    { id: "customerId", label: "Customer Id " },
+    {
+      id: "rollWeight",
+      label: "Roll Weight | Remaining",
+      dataFormat: (cell, row) => (
+        <span>{`${row.rollWeight} | ${row.remainingRollWeight}`}</span>
+      ),
+    },
+    { id: "rollSize", label: "Roll Size" },
+    { id: "cupSize", label: "Cup Size" },
+    { id: "paperSupplier", label: "Paper Supplier" },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    { id: "" },
+  ];
+
+  const TUMERIC_ORDER_TABLE_COLUMNS = [
+    {
+      id: "orderDate",
+      label: "Order Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    { id: "orderId", label: "Order Id" },
+    { id: "productType", label: "Product Type" },
+    { id: "packingSize", label: "Packing Size" },
+    { id: "quantity", label: "Quantity" },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    {
+      id: "",
+      label: "",
+      dataFormat: (cell, row) => (
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => handleOpenMenu(e, row)}
+        >
+          <Iconify icon={"eva:more-vertical-fill"} />
+        </IconButton>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageContainer title={"All Orders"}>
@@ -164,79 +206,12 @@ export default function AllOrdersPage() {
             onRefresh={onRefresh}
             onSearchChange={onSearchChange}
           />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table size="small">
-                <TableListHeader headLabel={ORDER_TABLE_HEAD} />
-                <TableBody>
-                  {orders.map((row) => {
-                    const {
-                      id,
-                      orderId,
-                      orderDate,
-                      customerId,
-                      rollWeight,
-                      rollSize,
-                      cupSize,
-                      remainingRollWeight,
-                      paperSupplier,
-                      status,
-                    } = row;
-                    const stillUtc = moment.utc(orderDate).toDate();
-
-                    return (
-                      <TableRow hover key={id}>
-                        <TableCell align="left">
-                          {moment(stillUtc).local().format("YYYY-MM-DD")}
-                        </TableCell>
-                        <TableCell align="left">{orderId}</TableCell>
-                        <TableCell align="left">{customerId}</TableCell>
-                        <TableCell align="left">{`${rollWeight} | ${remainingRollWeight}`}</TableCell>
-                        <TableCell align="left">{rollSize}</TableCell>
-                        <TableCell align="left">{cupSize}</TableCell>
-                        <TableCell align="left">{paperSupplier}</TableCell>
-                        <TableCell align="left">
-                          <Label color={"info"}>{status}</Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            onClick={(e) => handleOpenMenu(e, row)}
-                          >
-                            <Iconify icon={"eva:more-vertical-fill"} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-
-                  {orders.length === 0 && (
-                    <TableRow hover>
-                      <TableCell
-                        colSpan={ORDER_TABLE_HEAD.length}
-                        align="center"
-                      >
-                        {"No Orders"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
-
-          {/* <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={orders.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          /> */}
+          <TableList  
+            size={"small"}
+            data={orders}
+            columns={TUMERIC_ORDER_TABLE_COLUMNS}
+            noDataText={"No Orders"}
+          />
         </Card>
       </PageContainer>
 
@@ -251,10 +226,10 @@ export default function AllOrdersPage() {
           Edit
         </MenuItem>
 
-        <MenuItem onClick={() => setChangeStatusDialogOpen(true)}>
+        {/* <MenuItem onClick={() => setChangeStatusDialogOpen(true)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
           Change Status
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem onClick={() => setOrderPaymentInfoDialogOpen(true)}>
           <Iconify icon={"fluent:payment-20-filled"} sx={{ mr: 2 }} />

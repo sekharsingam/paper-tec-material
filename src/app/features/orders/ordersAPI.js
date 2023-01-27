@@ -1,16 +1,15 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { API_END_POINT, ROLE_ADMIN } from "src/utils/constants";
 import {
   getAllPaymentDetailsDone,
   getOrderDone,
-  getOrdersDone,
-  getPaymentDetailsDone,
-  getRequestOrdersDone,
+  getOrdersDone, getRequestOrdersDone
 } from "./ordersSlice";
 
-const ORDERS_ENDPOINT = `${API_END_POINT}/api/v1/orders`;
+// const ORDERS_ENDPOINT = `${API_END_POINT}/api/v1/orders`;
+const ORDERS_ENDPOINT = `${API_END_POINT}/api/v1/turmeric/orders`;
+
 export const getOrders = (searchInput) => async (dispatch) => {
   axios
     .get(`${ORDERS_ENDPOINT}/getorders?searchInput=${searchInput || ""}`)

@@ -239,7 +239,7 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                     onChange={handlePaymentModeChange}
                   >
                     {PAYMENT_MODES.map((ele) => (
-                      <MenuItem value={ele}>{ele}</MenuItem>
+                      <MenuItem key={ele} value={ele}>{ele}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>

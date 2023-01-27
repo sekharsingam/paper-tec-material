@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getReportsData,
-  getSummaryData
+  getSummaryData,
 } from "src/app/features/dashboard/dashboardAPI";
 import { PageContainer } from "src/common";
 import { numberFormat, ROLE_ADMIN } from "src/utils/constants";
@@ -37,25 +37,55 @@ export default function DashboardAppPage() {
     dispatch(getReportsData(payload));
   }, [dispatch]);
 
+  const OrderInfoColumns = [
+    { id: "orderId", label: "Order Id" },
+    {
+      id: "orderDate",
+      label: "Order Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return (
+          <span>
+            {" "}
+            {new Intl.DateTimeFormat("en-IN").format(
+              moment(stillUtc).local().toDate()
+            )}
+          </span>
+        );
+      },
+    },
+    // { id: "rollWeight", label: "Roll Weight" },
+    // { id: "remainingRollWeight", label: "Remaing Roll Weight" },
+    { id: "quantity", label: "Quantity" },
+    { id: "deliveredQuantity", label: "Delivered Quantity" },
+    {
+      id: "totalAmount",
+      label: "Total Amount",
+      dataFormat: (cell, row) => <span>₹ {numberFormat(cell)}</span>,
+    },
+    {
+      id: "amountPaid",
+      label: "Paid Amount",
+      dataFormat: (cell, row) => (
+        <span style={{ color: "#00AB55" }}>₹ {numberFormat(cell)}</span>
+      ),
+    },
+    {
+      id: "paymentPending",
+      label: "Due Amount",
+      dataFormat: (cell, row) => (
+        <span style={{ color: "#e74c3c" }}>₹ {numberFormat(cell)}</span>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageContainer title={"Dashboard"}>
         <Grid container spacing={3}>
-          {reports.map((order) => {
-            const {
-              id,
-              orderId,
-              orderDate,
-              rollWeight,
-              remainingRollWeight,
-              totalAmount,
-              amountPaid,
-              paymentPending,
-            } = order;
-
-            const stillUtc = moment.utc(orderDate).toDate();
+          {reports.map((row, ind) => {
             return (
-              <Grid key={id} item md={4}>
+              <Grid key={row.id} item md={4}>
                 <Box
                   sx={{
                     "& > :not(style)": {
@@ -76,35 +106,24 @@ export default function DashboardAppPage() {
                       gap: "5px",
                     }}
                   >
-                    {/* <Typography variant="subtitle1">Order Id</Typography> */}
-                    <Typography variant="h4">{orderId}</Typography>
-                    <Typography />
-                    <Typography variant="body2">Order Date</Typography>
-                    <Typography variant="subtitle1">
-                      {new Intl.DateTimeFormat("en-IN").format(
-                        moment(stillUtc).local().toDate()
-                      )}
-                    </Typography>
-                    <Typography variant="body2">Roll Weight</Typography>
-                    <Typography variant="subtitle1">{rollWeight}</Typography>
-                    <Typography variant="body2">
-                      Remaining Roll Weight
-                    </Typography>
-                    <Typography variant="subtitle1">
-                      {remainingRollWeight}
-                    </Typography>
-                    <Typography variant="body2">Total Amount</Typography>{" "}
-                    <Typography variant="subtitle1">
-                      ₹ {numberFormat(totalAmount)}
-                    </Typography>
-                    <Typography variant="body2">Paid Amount</Typography>
-                    <Typography variant="subtitle1" color={"#00AB55"}>
-                      ₹ {numberFormat(amountPaid)}
-                    </Typography>
-                    <Typography variant="body2">Due Amount</Typography>
-                    <Typography variant="subtitle1" color={"#e74c3c"}>
-                      ₹ {numberFormat(paymentPending)}
-                    </Typography>
+                    {OrderInfoColumns.map((col, ind) => {
+                      const cellValue = col.dataFormat
+                        ? col.dataFormat(row[col.id], row)
+                        : row[col.id];
+                      return ind === 0 ? (
+                        <>
+                          <Typography variant="h4">{cellValue}</Typography>
+                          <Typography />
+                        </>
+                      ) : (
+                        <>
+                          <Typography variant="body2">{col.label}</Typography>
+                          <Typography variant="subtitle1">
+                            {cellValue}
+                          </Typography>
+                        </>
+                      );
+                    })}
                   </Paper>
                 </Box>
               </Grid>

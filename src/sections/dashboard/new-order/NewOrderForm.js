@@ -137,7 +137,7 @@ export default function NewOrderForm({
             onChange={handleCupSizeChange}
           >
             {CUP_SIZE_ITEMS.map((ele) => (
-              <MenuItem value={ele}>{ele}</MenuItem>
+              <MenuItem key={ele} value={ele}>{ele}</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -152,7 +152,7 @@ export default function NewOrderForm({
             onChange={handlePaperSupplierChange}
           >
             {PAPER_SUPPLIER_ITEMS.map((ele) => (
-              <MenuItem value={ele}>{ele}</MenuItem>
+              <MenuItem key={ele} value={ele}>{ele}</MenuItem>
             ))}
           </Select>
         </FormControl>

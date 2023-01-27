@@ -2,12 +2,7 @@ import {
   Card,
   Divider,
   IconButton,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
+  MenuItem
 } from "@mui/material";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
@@ -15,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   approveCustomer,
   deleteCustomer,
-  getCustomers,
+  getCustomers
 } from "src/app/features/customer/customerAPI";
 import {
   ActionPopover,
@@ -23,25 +18,11 @@ import {
   DeleteDialog,
   PageContainer,
   RejectReasonDialog,
+  TableList
 } from "src/common";
-import TableListHeader from "src/common/TableListHeader";
 import Label from "src/components/label";
 import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
 import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
-
-// ----------------------------------------------------------------------
-
-const CUSTOMER_TABLE_HEAD = [
-  { id: "name", label: "Name", alignRight: false },
-  { id: "email", label: "Email", alignRight: false },
-  { id: "phone", label: "Phone", alignRight: false },
-  { id: "address", label: "Address", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
-  { id: "" },
-];
-
-// ----------------------------------------------------------------------
 
 export default function AllCustomersPage() {
   const [openPopover, setPopoverOpen] = useState(null);
@@ -122,6 +103,41 @@ export default function AllCustomersPage() {
       : "";
   };
 
+  const CUSTOMER_TABLE_COLUMNS = [
+    {
+      id: "name",
+      label: "Name",
+      dataFormat: (cell, row) => (
+        <span>{`${row.firstName} ${row.lastName}`}</span>
+      ),
+    },
+    { id: "email", label: "Email" },
+    { id: "phone", label: "Phone" },
+    {
+      id: "address",
+      label: "Address",
+      dataFormat: (cell, row) => getAddress(cell),
+    },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    {
+      id: "",
+      label: "",
+      dataFormat: (cell, row) => (
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => handleOpenMenu(e, row)}
+        >
+          <Iconify icon={"eva:more-vertical-fill"} />
+        </IconButton>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageContainer title={"All Customers"}>
@@ -131,59 +147,12 @@ export default function AllCustomersPage() {
             onSearchChange={onSearchChange}
           />
 
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table size="medium">
-                <TableListHeader headLabel={CUSTOMER_TABLE_HEAD} />
-                <TableBody>
-                  {customers.map((row) => {
-                    const {
-                      id,
-                      firstName,
-                      lastName,
-                      email,
-                      phone,
-                      address,
-                      status,
-                    } = row;
-                    return (
-                      <TableRow hover key={id}>
-                        <TableCell align="left">{`${firstName} ${lastName}`}</TableCell>
-                        <TableCell align="left">{email}</TableCell>
-                        <TableCell align="left">{phone}</TableCell>
-                        <TableCell align="left">
-                          {getAddress(address)}
-                        </TableCell>
-                        <TableCell align="left">
-                          <Label color={"info"}>{status}</Label>
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            onClick={(e) => handleOpenMenu(e, row)}
-                          >
-                            <Iconify icon={"eva:more-vertical-fill"} />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-
-                  {customers.length === 0 && (
-                    <TableRow hover>
-                      <TableCell
-                        colSpan={CUSTOMER_TABLE_HEAD.length}
-                        align="center"
-                      >
-                        {"No Customers"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+          <TableList
+            size={"medium"}
+            data={customers}
+            columns={CUSTOMER_TABLE_COLUMNS}
+            noDataText={"No Customers"}
+          />
         </Card>
       </PageContainer>
 

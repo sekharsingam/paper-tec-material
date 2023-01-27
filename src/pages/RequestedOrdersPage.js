@@ -2,44 +2,26 @@
 import {
   Card,
   IconButton,
-  MenuItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
+  MenuItem
 } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getRequestedOrders,
-  orderApproval,
+  orderApproval
 } from "src/app/features/orders/ordersAPI";
 import {
   ActionPopover,
   CustomSearchToolbar,
   PageContainer,
-  RejectReasonDialog,
-  TableListHeader,
+  RejectReasonDialog
 } from "src/common";
+import TableList from "src/common/TableList";
 import Label from "src/components/label";
-import { getStatusColor, STATUS } from "src/utils/constants";
+import { STATUS } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
-import Scrollbar from "../components/scrollbar";
-
-const REQ_ORDERS_TABLE_HEAD = [
-  { id: "orderDate", label: "Order Date", alignRight: false },
-  { id: "orderRequestId", label: "Order Request Id", alignRight: false },
-  { id: "customerId", label: "Customer Id ", alignRight: false },
-  { id: "rollWeight", label: "Roll Weight", alignRight: false },
-  { id: "rollSize", label: "Roll Size", alignRight: false },
-  { id: "cupSize", label: "Cup Size", alignRight: false },
-  { id: "paperSupplier", label: "Paper Supplier", alignRight: false },
-  { id: "status", label: "Status", alignRight: false },
-  { id: "" },
-];
 
 // ----------------------------------------------------------------------
 
@@ -113,6 +95,76 @@ export default function RequestedOrdersPage() {
     handleCloseRejectReasonDialog();
   };
 
+  const REQ_ORDERS_TABLE_COLUMNS = [
+    {
+      id: "orderDate",
+      label: "Order Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    { id: "orderRequestId", label: "Order Request Id" },
+    { id: "customerId", label: "Customer Id " },
+    { id: "rollWeight", label: "Roll Weight" },
+    { id: "rollSize", label: "Roll Size" },
+    { id: "cupSize", label: "Cup Size" },
+    { id: "paperSupplier", label: "Paper Supplier" },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    {
+      id: "",
+      label: "",
+      dataFormat: (cell, row) => (
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => handleOpenMenu(e, row)}
+        >
+          <Iconify icon={"eva:more-vertical-fill"} />
+        </IconButton>
+      ),
+    },
+  ];
+
+
+  const REQ_TUMERIC_ORDERS_TABLE_COLUMNS = [
+    {
+      id: "orderDate",
+      label: "Order Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    { id: "orderRequestId", label: "Order Request Id" },
+    { id: "customerId", label: "Customer Id " },
+    { id: "productType", label: "Product Type" },
+    { id: "packingSize", label: "Packing Size" },
+    { id: "quantity", label: "Quantity" },
+    {
+      id: "status",
+      label: "Status",
+      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+    },
+    {
+      id: "",
+      label: "",
+      dataFormat: (cell, row) => (
+        <IconButton
+          size="large"
+          color="inherit"
+          onClick={(e) => handleOpenMenu(e, row)}
+        >
+          <Iconify icon={"eva:more-vertical-fill"} />
+        </IconButton>
+      ),
+    },
+  ];
+
   return (
     <>
       <PageContainer title={"Requested Orders"}>
@@ -121,71 +173,12 @@ export default function RequestedOrdersPage() {
             onRefresh={onRefresh}
             // onSearchChange={onSearchChange}
           />
-
-          <Scrollbar>
-            <TableContainer sx={{ minWidth: 800 }}>
-              <Table size="medium">
-                <TableListHeader headLabel={REQ_ORDERS_TABLE_HEAD} />
-                <TableBody>
-                  {requestedOrders.map((row) => {
-                    const {
-                      id,
-                      orderDate,
-                      orderRequestId,
-                      customerId,
-                      rollWeight,
-                      rollSize,
-                      cupSize,
-                      paperSupplier,
-                      status,
-                    } = row;
-                    const stillUtc = moment.utc(orderDate).toDate();
-
-                    return (
-                      <TableRow hover key={id}>
-                        <TableCell align="left">
-                          {moment(stillUtc).local().format("YYYY-MM-DD")}
-                        </TableCell>
-                        <TableCell align="left">{orderRequestId}</TableCell>
-                        <TableCell align="left">{customerId}</TableCell>
-                        <TableCell align="left">{rollWeight}</TableCell>
-                        <TableCell align="left">{rollSize}</TableCell>
-                        <TableCell align="left">{cupSize}</TableCell>
-                        <TableCell align="left">{paperSupplier}</TableCell>
-
-                        <TableCell align="left">
-                          <Label color={getStatusColor(status)}>{status}</Label>
-                        </TableCell>
-
-                        <TableCell align="right">
-                          {status === STATUS.PENDING && (
-                            <IconButton
-                              size="large"
-                              color="inherit"
-                              onClick={(e) => handleOpenMenu(e, row)}
-                            >
-                              <Iconify icon={"eva:more-vertical-fill"} />
-                            </IconButton>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-
-                  {requestedOrders.length === 0 && (
-                    <TableRow hover>
-                      <TableCell
-                        colSpan={REQ_ORDERS_TABLE_HEAD.length}
-                        align="center"
-                      >
-                        {"No Orders"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Scrollbar>
+          <TableList
+            size={"medium"}
+            data={requestedOrders}
+            columns={REQ_TUMERIC_ORDERS_TABLE_COLUMNS}
+            noDataText={"No Orders"}
+          />
         </Card>
       </PageContainer>
 

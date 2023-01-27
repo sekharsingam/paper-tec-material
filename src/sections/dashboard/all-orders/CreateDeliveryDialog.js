@@ -29,26 +29,27 @@ export default function CreateDeliveryDialog({
   onCancel,
 }) {
   const [deliveryDate, setDeliveryDate] = useState(null);
-  const [price, setPrice] = useState("");
   const [rollWeightUtilize, setRollWeightUtilize] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const handleDeliveryDateChange = (newDate) => {
     setDeliveryDate(newDate);
-  };
-
-  const handlePriceChange = (e) => {
-    setPrice(e.target.value);
   };
 
   const handleRollWeightUtilize = (e) => {
     setRollWeightUtilize(e.target.value);
   };
 
+  const handleQuantity = (e) => {
+    setQuantity(e.target.value);
+  };
+
   const handleConfirm = () => {
     onConfirm({
       deliveryDate: moment.utc(deliveryDate).format(),
       // price,
-      rollWeight: Number(rollWeightUtilize),
+      // rollWeight: Number(rollWeightUtilize),
+      quantity
     });
   };
 
@@ -90,20 +91,21 @@ export default function CreateDeliveryDialog({
             </LocalizationProvider>
             {/* <TextField
               fullWidth
-              name="price"
-              type={"number"}
-              label="Price"
-              value={price}
-              onChange={handlePriceChange}
-            /> */}
-            <TextField
-              fullWidth
               name="rollWeightUtilize"
               type={"number"}
               label="Roll Weight Utilize (Tons)"
               value={rollWeightUtilize}
               onChange={handleRollWeightUtilize}
               helperText={`Remaining Roll Weight: ${order.remainingRollWeight}`}
+            /> */}
+            <TextField
+              fullWidth
+              name="quanty"
+              type={"number"}
+              label="Quantity"
+              value={quantity}
+              onChange={handleQuantity}
+              helperText={`Remaining Quantity: ${order.remainingQuantity}`}
             />
           </Stack>
         </DialogContent>

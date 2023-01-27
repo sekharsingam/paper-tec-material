@@ -3,10 +3,11 @@ import { toast } from "react-toastify";
 import { API_END_POINT } from "src/utils/constants";
 import { createDeliveryDone, getDeliveriesDone } from "./deliverySlice";
 
+const DELIVERY_API_END_POINT = `${API_END_POINT}/api/v1/turmeric/delivery`
 export const getDeliveries = (searchInput) => async (dispatch) => {
   axios
     .get(
-      `${API_END_POINT}/api/v1/delivery/getdeliveries?searchInput=${
+      `${DELIVERY_API_END_POINT}/getdeliveries?searchInput=${
         searchInput || ""
       }`
     )
@@ -17,7 +18,7 @@ export const getDeliveries = (searchInput) => async (dispatch) => {
 
 export const createDelivery = (payload) => async (dispatch) => {
   axios
-    .post(`${API_END_POINT}/api/v1/delivery/createdelivery`, payload)
+    .post(`${DELIVERY_API_END_POINT}/createdelivery`, payload)
     .then((response) => {
       dispatch(createDeliveryDone(response.data));
       toast.success("Delivery has been created successfully.");
@@ -29,7 +30,7 @@ export const createDelivery = (payload) => async (dispatch) => {
 
 export const updateDelivery = (payload) => async (dispatch) => {
   axios
-    .put(`${API_END_POINT}/api/v1/delivery/updatedelivery`, payload)
+    .put(`${DELIVERY_API_END_POINT}/updatedelivery`, payload)
     .then((response) => {
       dispatch(getDeliveries());
       toast.success("Delivery has been updated successfully.");
