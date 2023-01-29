@@ -2,16 +2,17 @@ const PORT = 8081;
 export const API_END_POINT = `http://localhost:${PORT}`;
 export const COMPANY_NAME = "Suchi IT";
 export const DEBOUNCE_TIME = 500;
-export const EMAIL_VALIDATION_REGEX = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+export const EMAIL_VALIDATION_REGEX =
+  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 export const PHONE_NUMBER_VALIDATION_REGEX =
   /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/;
 export const PASSWORD_VALIDATION_REGEX =
-  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/; // Minimum eight characters, at least one letter and one number:
+  /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]?[\w!@#$%^&*]{8,}$/; // Minimum eight characters, at least one letter and one number:
 
 // /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/ //Minimum eight characters, at least one uppercase letter, one lowercase letter and one number:
 
 export const TUMERIC_PRODUCT_TYPE = [
-  "Turmeric powder",
+  "Turmeric Powder",
   "Coriander Powder",
   "Chilli Powder",
   "Thalimpu Ginjalu",

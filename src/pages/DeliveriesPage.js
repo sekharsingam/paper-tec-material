@@ -12,7 +12,7 @@ import TableList from "src/common/TableList";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import { ChangeOrderStatusDialog } from "src/sections/dashboard/all-orders";
-import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
+import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
 
 export default function DeliveriesPage() {
   const [searchValue, setSearchValue] = useState("");
@@ -80,7 +80,7 @@ export default function DeliveriesPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+      dataFormat: (cell, row) => <Label color={getStatusColor(cell)}>{cell}</Label>,
     },
     {
       id: "",
@@ -112,7 +112,7 @@ export default function DeliveriesPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+      dataFormat: (cell, row) => <Label color={getStatusColor(cell)}>{cell}</Label>,
     },
     {
       id: "",

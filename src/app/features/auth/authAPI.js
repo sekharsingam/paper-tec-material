@@ -6,7 +6,7 @@ import { loginCalling, loginDone, loginDoneWithError, registrationCalling, regis
 export const login = (payload) => async (dispatch) => {
   dispatch(loginCalling());
   axios
-    .post(`${API_END_POINT}/api/v1/paper/login`, payload)
+    .post(`${API_END_POINT}/api/v1/turmeric/login`, payload)
     .then((response) => {
       localStorage.setItem("user", JSON.stringify(response.data));
       dispatch(loginDone(response.data));
@@ -17,7 +17,7 @@ export const login = (payload) => async (dispatch) => {
 export const registration = (payload) => async (dispatch) => {
   dispatch(registrationCalling());
   axios
-    .post(`${API_END_POINT}/api/v1/customers/createcustomer`, payload)
+    .post(`${API_END_POINT}/api/v1/turmeric/customers/createcustomer`, payload)
     .then(() => {
       toast.success("Register successfully.");
       dispatch(registrationDone());

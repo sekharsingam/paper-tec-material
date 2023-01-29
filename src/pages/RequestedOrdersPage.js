@@ -1,25 +1,21 @@
 // @mui
-import {
-  Card,
-  IconButton,
-  MenuItem
-} from "@mui/material";
+import { Card, IconButton, MenuItem } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getRequestedOrders,
-  orderApproval
+  orderApproval,
 } from "src/app/features/orders/ordersAPI";
 import {
   ActionPopover,
   CustomSearchToolbar,
   PageContainer,
-  RejectReasonDialog
+  RejectReasonDialog,
 } from "src/common";
 import TableList from "src/common/TableList";
 import Label from "src/components/label";
-import { STATUS } from "src/utils/constants";
+import { getStatusColor, STATUS } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
 
@@ -113,7 +109,9 @@ export default function RequestedOrdersPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+      dataFormat: (cell, row) => (
+        <Label color={getStatusColor(cell)}>{cell}</Label>
+      ),
     },
     {
       id: "",
@@ -129,7 +127,6 @@ export default function RequestedOrdersPage() {
       ),
     },
   ];
-
 
   const REQ_TUMERIC_ORDERS_TABLE_COLUMNS = [
     {
@@ -148,7 +145,9 @@ export default function RequestedOrdersPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+      dataFormat: (cell, row) => (
+        <Label color={getStatusColor(cell)}>{cell}</Label>
+      ),
     },
     {
       id: "",

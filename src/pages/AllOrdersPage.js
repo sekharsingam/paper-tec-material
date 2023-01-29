@@ -1,10 +1,5 @@
 // @mui
-import {
-  Card,
-  Divider,
-  IconButton,
-  MenuItem
-} from "@mui/material";
+import { Card, Divider, IconButton, MenuItem } from "@mui/material";
 import { debounce } from "lodash";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -14,13 +9,13 @@ import {
   deleteOrder,
   getOrders,
   getOrdersByCustomer,
-  updateOrder
+  updateOrder,
 } from "src/app/features/orders/ordersAPI";
 import {
   ActionPopover,
   CustomSearchToolbar,
   DeleteDialog,
-  PageContainer
+  PageContainer,
 } from "src/common";
 import TableList from "src/common/TableList";
 import Label from "src/components/label";
@@ -28,9 +23,14 @@ import {
   ChangeOrderStatusDialog,
   CreateDeliveryDialog,
   EditOrderDialog,
-  OrderPaymentInfoDialog
+  OrderPaymentInfoDialog,
 } from "src/sections/dashboard/all-orders";
-import { DEBOUNCE_TIME, ROLE_ADMIN, STATUS } from "src/utils/constants";
+import {
+  DEBOUNCE_TIME,
+  getStatusColor,
+  ROLE_ADMIN,
+  STATUS,
+} from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
 
@@ -176,12 +176,20 @@ export default function AllOrdersPage() {
     },
     { id: "orderId", label: "Order Id" },
     { id: "productType", label: "Product Type" },
-    { id: "packingSize", label: "Packing Size" },
+    {
+      id: "packingSize",
+      label: "Packing Size",
+      dataFormat: (cell, row) => (
+        <span>{`${cell} ${row.productType === "Honey" ? "ml" : "gms"}`}</span>
+      ),
+    },
     { id: "quantity", label: "Quantity" },
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+      dataFormat: (cell, row) => (
+        <Label color={getStatusColor(cell)}>{cell}</Label>
+      ),
     },
     {
       id: "",
@@ -206,7 +214,7 @@ export default function AllOrdersPage() {
             onRefresh={onRefresh}
             onSearchChange={onSearchChange}
           />
-          <TableList  
+          <TableList
             size={"small"}
             data={orders}
             columns={TUMERIC_ORDER_TABLE_COLUMNS}

@@ -1,15 +1,14 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
 // @mui
 import { styled } from '@mui/material/styles';
-//
-import Header from './header';
+import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
 import Nav from './nav';
 
 // ----------------------------------------------------------------------
 
 const APP_BAR_MOBILE = 64;
-const APP_BAR_DESKTOP = 60;
+// const APP_BAR_DESKTOP = 60;
+const APP_BAR_DESKTOP = 0;
 
 const StyledRoot = styled('div')({
   display: 'flex',
@@ -37,7 +36,7 @@ export default function DashboardLayout() {
 
   return (
     <StyledRoot>
-      <Header onOpenNav={() => setOpen(true)} />
+      {/* <Header onOpenNav={() => setOpen(true)} /> */}
 
       <Nav openNav={open} onCloseNav={() => setOpen(false)} />
 

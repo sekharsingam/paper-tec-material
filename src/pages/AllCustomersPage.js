@@ -21,7 +21,7 @@ import {
   TableList
 } from "src/common";
 import Label from "src/components/label";
-import { DEBOUNCE_TIME, STATUS } from "src/utils/constants";
+import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
 import Iconify from "../components/iconify";
 
 export default function AllCustomersPage() {
@@ -121,7 +121,7 @@ export default function AllCustomersPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={"info"}>{cell}</Label>,
+      dataFormat: (cell, row) => <Label color={getStatusColor(cell)}>{cell}</Label>,
     },
     {
       id: "",
