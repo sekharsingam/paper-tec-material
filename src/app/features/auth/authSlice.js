@@ -4,7 +4,7 @@ const initialState = {
   loginResponse: [],
   loginCalling: false,
   loginError: null,
-  registrationCalling: false,
+  registrationSuccess: false,
   isLoggedIn: false,
   loggedInUser: localStorage.user ? JSON.parse(localStorage.user) : null,
 };
@@ -35,12 +35,11 @@ export const authSlice = createSlice({
     }),
     registrationCalling: (state) => ({
       ...state,
-      registrationCalling: true,
+      registrationSuccess: false,
     }),
     registrationDone: (state, action) => ({
       ...state,
-      registrationError: action.payload,
-      registrationCalling: false,
+      registrationSuccess: action.payload.success,
     }),
     logout: (state, action) => ({
       ...state,

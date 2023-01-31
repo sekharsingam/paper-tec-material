@@ -6,3 +6,4 @@ export { default as TableListHeader } from "./TableListHeader";
 export { default as PageContainer } from "./PageContainer";
 export { default as ActionPopover } from "./ActionPopover";
 export { default as TableList } from "./TableList";
+export { default as OverlayLoader } from "./OverlayLoader";

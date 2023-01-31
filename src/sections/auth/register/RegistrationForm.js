@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   Stack,
@@ -15,6 +15,7 @@ import {
   PASSWORD_VALIDATION_REGEX,
   PHONE_NUMBER_VALIDATION_REGEX,
 } from "src/utils/constants";
+import { useSelector } from "react-redux";
 
 export default function RegistrationForm({ onRegister }) {
   const [firstName, setFirstName] = useState("");
@@ -36,6 +37,14 @@ export default function RegistrationForm({ onRegister }) {
   const [isValidPhoneNum, setIsValidPhoneNum] = useState(true);
   const [isValidPassword, setIsValidPassword] = useState(true);
   const [passwordMatch, setPasswordMatch] = useState(true);
+
+  const { registrationSuccess } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (registrationSuccess) {
+      clearRegistrationForm();
+    }
+  }, [registrationSuccess]);
 
   const handleOnEmailBlur = () => {
     setIsValidEmail(new RegExp(EMAIL_VALIDATION_REGEX).test(email));
@@ -69,6 +78,21 @@ export default function RegistrationForm({ onRegister }) {
     };
 
     onRegister(payload);
+  };
+
+  const clearRegistrationForm = () => {
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setPassword("");
+    setConfirmPassword("");
+    setLane("");
+    setStreet("");
+    setCity("");
+    setState("");
+    setCountry("");
+    setZipCode("");
   };
 
   return (
@@ -212,7 +236,7 @@ export default function RegistrationForm({ onRegister }) {
         />
         <TextField
           name="zipCode"
-          label="Zip Code"
+          label="Pincode"
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
         />

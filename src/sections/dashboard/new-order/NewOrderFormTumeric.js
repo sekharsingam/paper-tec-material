@@ -12,9 +12,7 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { getCustomers } from "src/app/features/customer/customerAPI";
-import { getMasterData } from "src/app/features/masterData/masterDataAPI";
+import { useSelector } from "react-redux";
 import {
   HONEY_PACKAGE_SIZES,
   PACKAGE_SIZES,
@@ -37,17 +35,13 @@ export default function NewOrderFormTumeric({
   const [productType, setOrderType] = useState("");
   const [packingSize, setPackingSize] = useState("");
 
-  //   const { cupSize: CUP_SIZE_ITEMS, paperSupplier: PAPER_SUPPLIER_ITEMS } =
-  //     useSelector((state) => state.masterData);
-
   const loggedUserDetails = JSON.parse(localStorage.user);
 
-  const dispatch = useDispatch();
+  const { orderCreationSuccess } = useSelector((state) => state.order);
 
   useEffect(() => {
     if (orderData) {
-      const { orderDate, quantity, productType, packingSize } =
-        orderData;
+      const { orderDate, quantity, productType, packingSize } = orderData;
       setOrderDate(moment(orderDate).format());
       setQuantity(quantity);
       setOrderType(productType);
@@ -56,9 +50,10 @@ export default function NewOrderFormTumeric({
   }, [orderData]);
 
   useEffect(() => {
-    // dispatch(getCustomers());
-    // dispatch(getMasterData());
-  }, []);
+    if (orderCreationSuccess) {
+      clearForm();
+    }
+  }, [orderCreationSuccess]);
 
   const handleOrderDateChange = (newDate) => {
     setOrderDate(newDate);
@@ -88,7 +83,12 @@ export default function NewOrderFormTumeric({
     onSubmit(payload);
   };
 
-  console.log(packingSize);
+  const clearForm = () => {
+    setOrderDate(null);
+    setQuantity("");
+    setOrderType("");
+    setPackingSize("");
+  };
 
   return (
     <>

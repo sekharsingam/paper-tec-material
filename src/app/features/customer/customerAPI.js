@@ -6,7 +6,7 @@ import { getCustomersDone } from "./customerSlice";
 export const getCustomers = (searchInput) => async (dispatch) => {
   axios
     .get(
-      `${API_END_POINT}/api/v1/customers/getcustomers?searchInput=${
+      `${API_END_POINT}/api/v1/turmeric/customers/getcustomers?searchInput=${
         searchInput || ""
       }`
     )
@@ -17,7 +17,7 @@ export const getCustomers = (searchInput) => async (dispatch) => {
 
 export const approveCustomer = (data) => async (dispatch) => {
   axios
-    .post(`${API_END_POINT}/api/v1/paper/accountapproval`, data)
+    .post(`${API_END_POINT}/api/v1/turmeric/accountapproval`, data)
     .then((response) => {
       toast.success(`Customer ${data.status} Successfully`);
       dispatch(getCustomers(''));
@@ -28,7 +28,7 @@ export const approveCustomer = (data) => async (dispatch) => {
 export const deleteCustomer = (customerId) => async (dispatch) => {
   axios
     .delete(
-      `${API_END_POINT}/api/v1/customers/deletecustomer?customerId=${customerId}`
+      `${API_END_POINT}/api/v1/turmeric/customers/deletecustomer?customerId=${customerId}`
     )
     .then((response) => {
       dispatch(getCustomers());

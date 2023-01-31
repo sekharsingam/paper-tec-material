@@ -1,16 +1,11 @@
-import {
-  Card,
-  Divider,
-  IconButton,
-  MenuItem
-} from "@mui/material";
+import { Card, Divider, IconButton, MenuItem } from "@mui/material";
 import { debounce } from "lodash";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   approveCustomer,
   deleteCustomer,
-  getCustomers
+  getCustomers,
 } from "src/app/features/customer/customerAPI";
 import {
   ActionPopover,
@@ -18,7 +13,7 @@ import {
   DeleteDialog,
   PageContainer,
   RejectReasonDialog,
-  TableList
+  TableList,
 } from "src/common";
 import Label from "src/components/label";
 import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
@@ -99,7 +94,7 @@ export default function AllCustomersPage() {
 
   const getAddress = (address) => {
     return address
-      ? `${address.lane}, ${address.street}, ${address.city}, ${address.state}, ${address.country}, ${address.zipCode}`
+      ? `${address.lane} ${address.street} ${address.city} ${address.state} ${address.country} ${address.zipCode}`
       : "";
   };
 
@@ -121,7 +116,9 @@ export default function AllCustomersPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={getStatusColor(cell)}>{cell}</Label>,
+      dataFormat: (cell, row) => (
+        <Label color={getStatusColor(cell)}>{cell}</Label>
+      ),
     },
     {
       id: "",

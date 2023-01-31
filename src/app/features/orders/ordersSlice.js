@@ -5,19 +5,18 @@ const initialState = {
   orderDetails: {},
   requestedOrders: [],
   allPaymentDetails: [],
-  getOrdersCalling: false,
-  createOrderCalling: false,
+  orderCreationSuccess: false,
+  paymentProcessingSuccess: false,
 };
 
 export const ordersSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    getOrders: (state) => ({ ...state, getOrdersCalling: true }),
+    getOrders: (state) => ({ ...state }),
     getOrdersDone: (state, action) => ({
       ...state,
       orders: action.payload,
-      getOrdersCalling: false,
     }),
     getOrderDone: (state, action) => ({
       ...state,
@@ -26,16 +25,23 @@ export const ordersSlice = createSlice({
     getRequestOrdersDone: (state, action) => ({
       ...state,
       requestedOrders: action.payload,
-      getOrdersCalling: false,
+    }),
+    addPaymentProcessing: (state, action) => ({
+      ...state,
+      paymentProcessingSuccess: false,
+    }),
+    addPaymentDone: (state, action) => ({
+      ...state,
+      paymentProcessingSuccess: action.payload.success,
     }),
     getAllPaymentDetailsDone: (state, action) => ({
       ...state,
       allPaymentDetails: action.payload,
     }),
-    createOrder: (state) => ({ ...state, createOrderCalling: true }),
+    createOrder: (state) => ({ ...state, orderCreationSuccess: false }),
     createOrderDone: (state, action) => ({
       ...state,
-      createOrderCalling: false,
+      orderCreationSuccess: action.payload.success,
     }),
   },
 });
@@ -49,6 +55,8 @@ export const {
   getAllPaymentDetailsDone,
   createOrder,
   createOrderDone,
+  addPaymentProcessing,
+  addPaymentDone,
 } = ordersSlice.actions;
 
 export default ordersSlice.reducer;

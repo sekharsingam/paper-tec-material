@@ -1,17 +1,15 @@
-import PropTypes from "prop-types";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Button,
   Card,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
   FormControl,
   IconButton,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Stack,
   Table,
@@ -20,24 +18,22 @@ import {
   TableContainer,
   TableRow,
   TextField,
-  Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { useEffect, useState } from "react";
-import Scrollbar from "src/components/scrollbar";
-import OrderListHead from "../../../common/TableListHeader";
-import { useDispatch, useSelector } from "react-redux";
-import moment from "moment";
-import Iconify from "src/components/iconify";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import moment from "moment";
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addPayment,
   getAllPaymentsDetails,
   getOrder,
 } from "src/app/features/orders/ordersAPI";
+import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import { numberFormat } from "src/utils/constants";
+import OrderListHead from "../../../common/TableListHeader";
 import { AppWidgetSummary } from "../app";
 
 OrderPaymentInfoDialog.propTypes = {
@@ -63,9 +59,11 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
   const [showAddPaymentView, setShowAddPaymentView] = useState(false);
   const [paymentMode, setPaymentMode] = useState(null);
 
-  const { allPaymentDetails = [], orderDetails = {} } = useSelector(
-    (state) => state.order
-  );
+  const {
+    allPaymentDetails = [],
+    orderDetails = {},
+    paymentProcessingSuccess,
+  } = useSelector((state) => state.order);
 
   const dispatch = useDispatch();
 
@@ -73,6 +71,12 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
     dispatch(getAllPaymentsDetails(order.orderId));
     dispatch(getOrder(order.orderId));
   }, []);
+
+  useEffect(() => {
+    if (paymentProcessingSuccess) {
+      clearForm();
+    }
+  }, [paymentProcessingSuccess]);
 
   const handlePaymentDateChange = (newDate) => {
     setPaymentDate(newDate);
@@ -104,8 +108,13 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
   };
 
   const onCancelPayment = () => {
+    clearForm();
+  };
+
+  const clearForm = () => {
     setPaymentDate(null);
     setAmount("");
+    setPaymentMode("")
     setNotes("");
     setShowAddPaymentView(false);
   };
@@ -239,7 +248,9 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
                     onChange={handlePaymentModeChange}
                   >
                     {PAYMENT_MODES.map((ele) => (
-                      <MenuItem key={ele} value={ele}>{ele}</MenuItem>
+                      <MenuItem key={ele} value={ele}>
+                        {ele}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>

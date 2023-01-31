@@ -37,18 +37,14 @@ export default function NewOrderForm({
     useSelector((state) => state.masterData);
 
   const loggedUserDetails = JSON.parse(localStorage.user);
+  const { orderCreationSuccess } = useSelector((state) => state.order);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (orderData) {
-      const {
-        orderDate,
-        rollWeight,
-        rollSize,
-        cupSize,
-        paperSupplier,
-      } = orderData;
+      const { orderDate, rollWeight, rollSize, cupSize, paperSupplier } =
+        orderData;
       setOrderDate(moment(orderDate).format());
       setRollWeight(rollWeight);
       setRollSize(rollSize);
@@ -61,6 +57,12 @@ export default function NewOrderForm({
     dispatch(getCustomers());
     dispatch(getMasterData());
   }, []);
+
+  useEffect(() => {
+    if (orderCreationSuccess) {
+      clearForm();
+    }
+  }, [orderCreationSuccess]);
 
   const handleOrderDateChange = (newDate) => {
     setOrderDate(newDate);
@@ -92,6 +94,14 @@ export default function NewOrderForm({
       paperSupplier,
     };
     onSubmit(payload);
+  };
+
+  const clearForm = () => {
+    setOrderDate(null);
+    setRollWeight("");
+    setRollSize("");
+    setCupSize("");
+    setPaperSupplier("");
   };
 
   return (
@@ -137,7 +147,9 @@ export default function NewOrderForm({
             onChange={handleCupSizeChange}
           >
             {CUP_SIZE_ITEMS.map((ele) => (
-              <MenuItem key={ele} value={ele}>{ele}</MenuItem>
+              <MenuItem key={ele} value={ele}>
+                {ele}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -152,7 +164,9 @@ export default function NewOrderForm({
             onChange={handlePaperSupplierChange}
           >
             {PAPER_SUPPLIER_ITEMS.map((ele) => (
-              <MenuItem key={ele} value={ele}>{ele}</MenuItem>
+              <MenuItem key={ele} value={ele}>
+                {ele}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
