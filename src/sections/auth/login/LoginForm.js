@@ -24,11 +24,11 @@ export default function LoginForm({ onLogin }) {
   const [email, setEmail] = useState(testEmail);
   const [password, setPassword] = useState(testPassword);
 
-  const { loginCalling, loginError } = useSelector((state) => state.auth);
+  const { loginError } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleClick = () => {
+  const handleLoginClick = () => {
     onLogin({ username: email, password });
   };
 
@@ -48,6 +48,7 @@ export default function LoginForm({ onLogin }) {
           type={showPassword ? "text" : "password"}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => (e.key === "Enter" ? handleLoginClick() : "")}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
@@ -91,8 +92,7 @@ export default function LoginForm({ onLogin }) {
         size="large"
         type="submit"
         variant="contained"
-        loading={loginCalling}
-        onClick={handleClick}
+        onClick={handleLoginClick}
         disabled={!(email && password)}
       >
         Login

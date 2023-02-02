@@ -5,13 +5,13 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getRequestedOrders,
-  orderApproval,
+  orderApproval
 } from "src/app/features/orders/ordersAPI";
 import {
   ActionPopover,
   CustomSearchToolbar,
   PageContainer,
-  RejectReasonDialog,
+  RejectReasonDialog
 } from "src/common";
 import TableList from "src/common/TableList";
 import Label from "src/components/label";
@@ -140,7 +140,13 @@ export default function RequestedOrdersPage() {
     { id: "orderRequestId", label: "Order Request Id" },
     { id: "customerId", label: "Customer Id " },
     { id: "productType", label: "Product Type" },
-    { id: "packingSize", label: "Packing Size" },
+    {
+      id: "packingSize",
+      label: "Packing Size",
+      dataFormat: (cell, row) => (
+        <span>{`${cell} ${row.productType === "Honey" ? "ml" : "gms"}`}</span>
+      ),
+    },
     { id: "quantity", label: "Quantity" },
     {
       id: "status",
