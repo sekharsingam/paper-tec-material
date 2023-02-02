@@ -1,7 +1,7 @@
 import { Box, Grid, Paper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import moment from "moment";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getReportsData,
@@ -111,17 +111,17 @@ export default function DashboardAppPage() {
                         ? col.dataFormat(row[col.id], row)
                         : row[col.id];
                       return ind === 0 ? (
-                        <>
+                        <React.Fragment key={ind}>
                           <Typography variant="h4">{cellValue}</Typography>
                           <Typography />
-                        </>
+                        </React.Fragment>
                       ) : (
-                        <>
+                        <React.Fragment key={ind}>
                           <Typography variant="body2">{col.label}</Typography>
                           <Typography variant="subtitle1">
                             {cellValue}
                           </Typography>
-                        </>
+                        </React.Fragment>
                       );
                     })}
                   </Paper>

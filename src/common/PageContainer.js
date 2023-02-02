@@ -4,7 +4,7 @@ import ApplicationTitle from "./ApplicationTitle";
 
 PageContainer.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export default function PageContainer({ title, children }) {
@@ -25,7 +25,6 @@ export default function PageContainer({ title, children }) {
         </Stack>
 
         {children}
-      
       </Container>
     </>
   );
