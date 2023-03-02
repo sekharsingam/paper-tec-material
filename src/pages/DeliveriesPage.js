@@ -5,14 +5,19 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   getDeliveries,
-  updateDelivery,
+  updateDelivery
 } from "src/app/features/delivery/deliveryAPI";
 import { ActionPopover, CustomSearchToolbar, PageContainer } from "src/common";
 import TableList from "src/common/TableList";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
 import { ChangeOrderStatusDialog } from "src/sections/dashboard/all-orders";
-import { DEBOUNCE_TIME, getStatusColor, STATUS } from "src/utils/constants";
+import {
+  DEBOUNCE_TIME,
+  getStatusColor,
+  ROLE_ADMIN,
+  STATUS
+} from "src/utils/constants";
 
 export default function DeliveriesPage() {
   const [searchValue, setSearchValue] = useState("");
@@ -23,6 +28,7 @@ export default function DeliveriesPage() {
   const dispatch = useDispatch();
 
   const { deliveries } = useSelector((state) => state.delivery);
+  const { loggedInUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getDeliveries(searchValue));
@@ -80,9 +86,14 @@ export default function DeliveriesPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={getStatusColor(cell)}>{cell}</Label>,
+      dataFormat: (cell, row) => (
+        <Label color={getStatusColor(cell)}>{cell}</Label>
+      ),
     },
-    {
+  ];
+
+  if (loggedInUser.role === ROLE_ADMIN) {
+    DELIVERIES_TABLE_COLUMNS.push({
       id: "",
       label: "",
       dataFormat: (cell, row) => (
@@ -94,8 +105,8 @@ export default function DeliveriesPage() {
           <Iconify icon={"eva:more-vertical-fill"} />
         </IconButton>
       ),
-    },
-  ];
+    });
+  }
 
   const TUMERIC_DELIVERIES_TABLE_COLUMNS = [
     { id: "deliveryId", label: "Delivery Id" },
@@ -112,9 +123,14 @@ export default function DeliveriesPage() {
     {
       id: "status",
       label: "Status",
-      dataFormat: (cell, row) => <Label color={getStatusColor(cell)}>{cell}</Label>,
+      dataFormat: (cell, row) => (
+        <Label color={getStatusColor(cell)}>{cell}</Label>
+      ),
     },
-    {
+  ];
+
+  if (loggedInUser.role === ROLE_ADMIN) {
+    TUMERIC_DELIVERIES_TABLE_COLUMNS.push({
       id: "",
       label: "",
       dataFormat: (cell, row) => (
@@ -126,8 +142,8 @@ export default function DeliveriesPage() {
           <Iconify icon={"eva:more-vertical-fill"} />
         </IconButton>
       ),
-    },
-  ];
+    });
+  }
 
   return (
     <>

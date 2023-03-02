@@ -11,13 +11,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  TextField,
+  Stack, TextField
 } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -28,27 +22,18 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addPayment,
   getAllPaymentsDetails,
-  getOrder,
+  getOrder
 } from "src/app/features/orders/ordersAPI";
+import { TableList } from "src/common";
 import Iconify from "src/components/iconify";
 import Label from "src/components/label";
-import { numberFormat } from "src/utils/constants";
-import OrderListHead from "../../../common/TableListHeader";
+import { numberFormat, ROLE_ADMIN } from "src/utils/constants";
 import { AppWidgetSummary } from "../app";
 
 OrderPaymentInfoDialog.propTypes = {
   open: PropTypes.bool,
   onCancel: PropTypes.func,
 };
-
-const TABLE_HEAD = [
-  { id: "orderId", label: "Order Id " },
-  { id: "paymentDate", label: "Payment Date" },
-  { id: "Amount", label: "Amount" },
-  { id: "mode", label: "Mode" },
-  { id: "status", label: "Status" },
-  //   { id: "" },
-];
 
 const PAYMENT_MODES = ["CASH", "CARD", "CHEQUE", "BANK TRANSFER", "UPI"];
 
@@ -64,6 +49,8 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
     orderDetails = {},
     paymentProcessingSuccess,
   } = useSelector((state) => state.order);
+
+  const { loggedInUser } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
 
@@ -114,10 +101,36 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
   const clearForm = () => {
     setPaymentDate(null);
     setAmount("");
-    setPaymentMode("")
+    setPaymentMode("");
     setNotes("");
     setShowAddPaymentView(false);
   };
+
+  const PAYMENT_TABLE_HEAD = [
+    { id: "orderId", label: "Order Id " },
+    {
+      id: "paymentDate",
+      label: "Payment Date",
+      dataFormat: (cell, row) => {
+        const stillUtc = moment.utc(cell).toDate();
+        return <span>{moment(stillUtc).local().format("YYYY-MM-DD")}</span>;
+      },
+    },
+    {
+      id: "amount",
+      label: "Amount",
+      dataFormat: (cell, row) => numberFormat(cell),
+    },
+  ];
+
+  if (loggedInUser.role === ROLE_ADMIN) {
+    PAYMENT_TABLE_HEAD.push({ id: "mode", label: "Mode" });
+  }
+  PAYMENT_TABLE_HEAD.push({
+    id: "status",
+    label: "Status",
+    dataFormat: (cell, row) => <Label color={"success"}>{"Paid"}</Label>,
+  });
 
   return (
     <div>
@@ -182,29 +195,30 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
               />
             </Box>
           </Stack>
-          <Stack
-            direction="row"
-            alignItems="center"
-            justifyContent="end"
-            mb={2}
-          >
-            <Button
-              onClick={() => setShowAddPaymentView((prevValue) => !prevValue)}
-              variant="contained"
-              startIcon={
-                <Iconify
-                  icon={
-                    !showAddPaymentView
-                      ? "akar-icons:circle-plus-fill"
-                      : "akar-icons:circle-minus-fill"
-                  }
-                />
-              }
+          {loggedInUser.role === ROLE_ADMIN && (
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="end"
+              mb={2}
             >
-              Add Payment
-            </Button>
-          </Stack>
-
+              <Button
+                onClick={() => setShowAddPaymentView((prevValue) => !prevValue)}
+                variant="contained"
+                startIcon={
+                  <Iconify
+                    icon={
+                      !showAddPaymentView
+                        ? "akar-icons:circle-plus-fill"
+                        : "akar-icons:circle-minus-fill"
+                    }
+                  />
+                }
+              >
+                Add Payment
+              </Button>
+            </Stack>
+          )}
           {showAddPaymentView && (
             <Stack sx={{ my: 3, display: "flex", justifyContent: "center" }}>
               <Box
@@ -287,46 +301,12 @@ export default function OrderPaymentInfoDialog({ open, order, onCancel }) {
 
           <Stack sx={{ my: 3 }}>
             <Card>
-              {/* <Scrollbar> */}
-              <TableContainer sx={{ minWidth: 800 }}>
-                <Table size="small">
-                  <OrderListHead headLabel={TABLE_HEAD} />
-                  <TableBody>
-                    {allPaymentDetails.map((row) => {
-                      const { id, orderId, paymentDate, amount, mode, status } =
-                        row;
-                      const stillUtc = moment.utc(paymentDate).toDate();
-
-                      return (
-                        <TableRow hover key={id}>
-                          <TableCell align="left">{orderId}</TableCell>
-                          <TableCell align="left">
-                            {moment(stillUtc).local().format("YYYY-MM-DD")}
-                          </TableCell>
-                          <TableCell align="left">
-                            {numberFormat(amount)}
-                          </TableCell>
-                          <TableCell align="left">{mode}</TableCell>
-                          <TableCell align="left">
-                            <Label color={"success"}>{"Paid"}</Label>
-                          </TableCell>
-
-                          {/* <TableCell align="right">
-                          <IconButton
-                            size="large"
-                            color="inherit"
-                            // onClick={(e) => handleOpenMenu(e, row)}
-                          >
-                            <Iconify icon={"eva:more-vertical-fill"} />
-                          </IconButton>
-                        </TableCell> */}
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-              {/* </Scrollbar> */}
+              <TableList
+                size={"small"}
+                data={allPaymentDetails}
+                columns={PAYMENT_TABLE_HEAD}
+                noDataText={"No payments"}
+              />
             </Card>
           </Stack>
         </DialogContent>

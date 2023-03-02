@@ -9,13 +9,13 @@ import {
   deleteOrder,
   getOrders,
   getOrdersByCustomer,
-  updateOrder,
+  updateOrder
 } from "src/app/features/orders/ordersAPI";
 import {
   ActionPopover,
   CustomSearchToolbar,
   DeleteDialog,
-  PageContainer,
+  PageContainer
 } from "src/common";
 import TableList from "src/common/TableList";
 import Label from "src/components/label";
@@ -23,13 +23,13 @@ import {
   ChangeOrderStatusDialog,
   CreateDeliveryDialog,
   EditOrderDialog,
-  OrderPaymentInfoDialog,
+  OrderPaymentInfoDialog
 } from "src/sections/dashboard/all-orders";
 import {
   DEBOUNCE_TIME,
   getStatusColor,
   ROLE_ADMIN,
-  STATUS,
+  STATUS
 } from "src/utils/constants";
 // components
 import Iconify from "../components/iconify";
@@ -51,6 +51,7 @@ export default function AllOrdersPage() {
   const dispatch = useDispatch();
 
   const { orders } = useSelector((state) => state.order);
+  const { loggedInUser } = useSelector((state) => state.auth);
 
   useEffect(() => {
     getCustomerOrders();
@@ -224,15 +225,19 @@ export default function AllOrdersPage() {
       </PageContainer>
 
       <ActionPopover open={openPopover} onClose={handlePopoverClose}>
-        <MenuItem onClick={() => setCreateDeliveryDialogOpen(true)}>
-          <Iconify icon={"eva:plus-circle-fill"} sx={{ mr: 2 }} />
-          Create Delivery
-        </MenuItem>
+        {loggedInUser.role === ROLE_ADMIN && (
+          <>
+            <MenuItem onClick={() => setCreateDeliveryDialogOpen(true)}>
+              <Iconify icon={"eva:plus-circle-fill"} sx={{ mr: 2 }} />
+              Create Delivery
+            </MenuItem>
 
-        <MenuItem onClick={() => setEditDialogOpen(true)}>
-          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
+            <MenuItem onClick={() => setEditDialogOpen(true)}>
+              <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
+              Edit
+            </MenuItem>
+          </>
+        )}
 
         {/* <MenuItem onClick={() => setChangeStatusDialogOpen(true)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }} />
@@ -244,15 +249,18 @@ export default function AllOrdersPage() {
           Payment Info
         </MenuItem>
 
-        <Divider sx={{ borderStyle: "dashed" }} />
-
-        <MenuItem
-          sx={{ color: "error.main" }}
-          onClick={() => setDeleteDialogOpen(true)}
-        >
-          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
+        {loggedInUser.role === ROLE_ADMIN && (
+          <>
+            <Divider sx={{ borderStyle: "dashed" }} />
+            <MenuItem
+              sx={{ color: "error.main" }}
+              onClick={() => setDeleteDialogOpen(true)}
+            >
+              <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }} />
+              Delete
+            </MenuItem>
+          </>
+        )}
       </ActionPopover>
 
       {openCreateDeliveryDialog && (
